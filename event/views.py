@@ -12,3 +12,12 @@ class EventList(generics.ListCreateAPIView):
     queryset = Event.objects.all().order_by('-start_date')
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class EventDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API endpoint that allows events to be viewed, updated or deleted.
+    """
+    queryset = Event.objects.all().order_by('-start_date')
+    serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticated]
