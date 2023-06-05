@@ -4,6 +4,11 @@
 # See https://www.gnu.org/software/make/.
 
 
+# Consume environment variables
+ifneq (,$(wildcard .env))
+	include .env
+endif
+
 # Tool configuration
 SHELL := /bin/bash
 GNUMAKEFLAGS += --no-print-directory
@@ -12,6 +17,7 @@ GNUMAKEFLAGS += --no-print-directory
 ROOT_DIR ?= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 # Target files
+ENV_FILE ?= .env
 REQUIREMENTS_TXT ?= requirements.txt
 MANAGE_PY ?= manage.py
 EPHEMERAL_ARCHIVES ?= \
@@ -37,6 +43,7 @@ help:: ## Show this help
 
 prepare:: ## Inicialize virtual environment
 	test -z $(VENV_DIR) -o -d $(VENV_DIR) || python3 -m venv $(VENV_DIR)
+	test -r $(ENV_FILE) -o ! -r $(ENV_FILE).example || cp $(ENV_FILE).example $(ENV_FILE)
 
 init:: veryclean prepare $(REQUIREMENTS_TXT) ## Configure development environment
 	$(PIP) install --upgrade pip
