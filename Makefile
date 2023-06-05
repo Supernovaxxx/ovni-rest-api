@@ -38,6 +38,7 @@ VENV_DIR ?= venv
 DJANGO_SETTINGS_MODULE ?= __project__.settings
 DJANGO_WSGI_MODULE ?= __project__.wsgi
 GUNICORN_SETTINGS_MODULE ?= __project__.gunicorn
+LOAD_FIXTURES ?= sample.yaml
 
 
 %: # Treat unrecognized targets
@@ -61,6 +62,7 @@ execute:: setup run ## Setup and run application
 setup:: clean compile ## Process source code into an executable program
 	$(DJANGO_ADMIN) makemigrations
 	$(DJANGO_ADMIN) migrate
+	test -z $(LOAD_FIXTURES) || $(DJANGO_ADMIN) loaddata $(LOAD_FIXTURES)
 
 compile:: ## Treat file generation
 	$(DJANGO_ADMIN) collectstatic --noinput --clear --link
