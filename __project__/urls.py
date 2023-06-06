@@ -17,12 +17,17 @@ Including another URLconf
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.shortcuts import redirect
-from django.urls import path
+from django.urls import path, include
+from .routers import router
 
 
 urlpatterns = [
-    path('', lambda req: redirect('admin/')),
+    path('', lambda req: redirect('api/')),
     path('admin/', admin.site.urls),
+    path('api/', include([
+        path('auth/', include('rest_framework.urls')),
+        path('', include(router.urls)),
+    ]))
 ]
 
 urlpatterns += staticfiles_urlpatterns()
