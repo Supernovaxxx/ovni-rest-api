@@ -1,8 +1,13 @@
 FROM python:3.11
 
-COPY . .
+COPY requirements.txt /tmp/
 
-RUN make init
-CMD make execute
+RUN cd /tmp/ \
+    make prepare \
+    make clean
+
+COPY . /opt/
+WORKDIR /opt
+RUN make init 
 
 EXPOSE 8000

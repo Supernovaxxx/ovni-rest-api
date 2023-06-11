@@ -1,0 +1,10 @@
+# my first dockerignore
+
+.env
+.gitignore
+.md
+
+__pycache__/
+*.pyc
+*.log
+*.pot
