@@ -1,0 +1,19 @@
+# my first dockerignore
+
+.env
+.gitignore
+.git
+*.md
+
+__pycache__/
+*.pyc
+*.log
+*.pot
+
+.idea/
+.env
+.pid
+venv/
+static/
+db.sqlite3
+**/migrations/
