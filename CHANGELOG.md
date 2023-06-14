@@ -18,3 +18,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stop tracking migrations while data-model isn't stable
 - Setup DRF for API development
 - Define event entity
+- Define default permissions
