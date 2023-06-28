@@ -89,14 +89,13 @@
   pk: 1
   fields:
     title: agency 1
-    owner: 2
+
 - model: agency.agency
   pk: 2
   fields:
     title: agency 2
-    owner: 3
+
 - model: agency.agency
   pk: 3
   fields:
     title: agency 3
-    owner: 4
