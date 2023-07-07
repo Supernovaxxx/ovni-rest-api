@@ -4,14 +4,14 @@ from django.dispatch import receiver
 
 from guardian.shortcuts import assign_perm
 
-from ..models import Agency
+from ..models import Agency, Tour
 
 
 @receiver(post_save, sender=Agency)
 def set_permissions(sender, instance, created, **kwargs):
     """
-    When a new agency is created, this signal will create a managers group for it and
-    assign the managers permission to edit the agency.
+    When a new Agency is created, this signal will create a managers group for it and
+    assign the managers permission to edit the Agency.
     """
     view = f"view_{instance._meta.model_name}"
     change = f"change_{instance._meta.model_name}"
@@ -24,5 +24,26 @@ def set_permissions(sender, instance, created, **kwargs):
 
         group.permissions.add(*manager_perms)
         
+        for perm in [view, change]:
+            assign_perm(perm, group, instance)
+
+
+@receiver(post_save, sender=Tour)
+def set_permissions(sender, instance, created, **kwargs):
+    """
+    When a new Tour is created, this signal will retrieve the associated manager group for it and
+    assign the managers permission to edit the Tour.
+    """
+    view = f"view_{instance._meta.model_name}"
+    change = f"change_{instance._meta.model_name}"
+
+    if created:
+        group = Group.objects.get(name=f'{instance.agency.title} Managers')
+
+        all_perms = Permission.objects.filter(codename__contains="tour")
+        manager_perms = [i for i in all_perms if i.codename in [view, change]]
+
+        group.permissions.add(*manager_perms)
+
         for perm in [view, change]:
             assign_perm(perm, group, instance)
