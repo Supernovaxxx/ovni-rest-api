@@ -19,3 +19,6 @@ jobs:
 
     - name: execute app
       run: make execute
+    
+    - name: Stop app
+      run: make finish
