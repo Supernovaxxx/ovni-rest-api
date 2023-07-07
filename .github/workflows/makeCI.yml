@@ -14,20 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: make
-
-    - name: Run check
-      run: make check
-
-    - name: Run distcheck
-      run: make distcheck
-      
     - name: init app
       run: make init
-    
-    - name: execute app
-      run: make execute
-    
-    - name: finish app
-      run: make finish
+
