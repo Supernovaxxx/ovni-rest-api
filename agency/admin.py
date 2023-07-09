@@ -10,6 +10,10 @@ class AgencyAdmin(GuardedModelAdmin):
     pass
 
 
+class TourAdmin(GuardedModelAdmin):
+    pass
+
+
 admin.site.register(Agency, AgencyAdmin)
-admin.site.register(Tour)
+admin.site.register(Tour, TourAdmin)
 
