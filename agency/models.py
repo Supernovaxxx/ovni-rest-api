@@ -11,8 +11,8 @@ class Agency(models.Model):
 
 
 class Tour(models.Model):
-    agency = models.ForeignKey(Agency, models.DO_NOTHING)
-    event = models.ForeignKey(Event, models.DO_NOTHING)
+    agency = models.ForeignKey(Agency, models.PROTECT)
+    event = models.ForeignKey(Event, models.PROTECT)
 
     class Meta:
         ordering = ['agency']
