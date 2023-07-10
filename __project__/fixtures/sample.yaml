@@ -3,99 +3,121 @@
 # This file defines initial data to be used on application setup
 # See https://docs.djangoproject.com/en/4.1/howto/initial-data/.
 
-
-- model: user.user
+# Events:
+- model: event.event
   pk: 1
   fields:
-      username: admin
-      email: admin@ovni.com
-      # password: dev
-      password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
-      last_login: null
-      is_superuser: true
-      is_staff: true
-      is_active: true
-      last_name: ''
-      first_name: ''
-      date_joined: 2022-10-05 16:50:52.408019+00:00
-      groups: []
-      user_permissions: []
-
-- model: user.user
+    title: '1'
+    subtitle: '1'
+    start_date: 2023-07-10 12:03:31+00:00
+    end_date: 2023-07-10 12:03:32+00:00
+- model: event.event
+  pk: 2
   fields:
-      username: user1
-      email: admin@ovni.com
-      # password: dev
-      password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
-      last_login: null
-      is_superuser: false
-      is_staff: false
-      is_active: true
-      last_name: ''
-      first_name: ''
-      date_joined: 2022-10-05 16:50:52.408019+00:00
-      groups: []
-      user_permissions: []
-
-- model: user.user
+    title: '2'
+    subtitle: '2'
+    start_date: 2023-07-10 12:04:57+00:00
+    end_date: 2023-07-10 12:04:58+00:00
+- model: event.event
+  pk: 3
   fields:
-      username: user2
-      email: admin@ovni.com
-      # password: dev
-      password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
-      last_login: null
-      is_superuser: false
-      is_staff: false
-      is_active: true
-      last_name: ''
-      first_name: ''
-      date_joined: 2022-10-05 16:50:52.408019+00:00
-      groups: []
-      user_permissions: []
+    title: '3'
+    subtitle: '3'
+    start_date: 2023-07-10 12:05:06+00:00
+    end_date: 2023-07-10 12:05:07+00:00
 
-- model: user.user
-  fields:
-      username: user3
-      email: admin@ovni.com
-      # password: dev
-      password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
-      last_login: null
-      is_superuser: false
-      is_staff: false
-      is_active: true
-      last_name: ''
-      first_name: ''
-      date_joined: 2022-10-05 16:50:52.408019+00:00
-      groups: []
-      user_permissions: []
-
-- model: user.user
-  fields:
-      username: user4
-      email: admin@ovni.com
-      # password: dev
-      password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
-      last_login: null
-      is_superuser: false
-      is_staff: false
-      is_active: true
-      last_name: ''
-      first_name: ''
-      date_joined: 2022-10-05 16:50:52.408019+00:00
-      groups: []
-      user_permissions: []
-
+# Agencies:
 - model: agency.agency
   pk: 1
   fields:
     title: agency 1
-
 - model: agency.agency
   pk: 2
   fields:
     title: agency 2
-
 - model: agency.agency
   pk: 3
   fields:
     title: agency 3
+
+# Users:
+- model: user.user
+  pk: 1
+  fields:
+    password: pbkdf2_sha256$600000$kM8VJVhfx4yd20mLNYZkWa$63EQSRr8C4J9zHJrUVxOjfkXnzmfG9UXWtppYOl6GOM=
+    last_login: 2023-07-10 12:02:22.821476+00:00
+    is_superuser: true
+    username: admin
+    first_name: ''
+    last_name: ''
+    email: admin@ovni.com
+    is_staff: true
+    is_active: true
+    date_joined: 2022-10-05 16:50:52.408019+00:00
+    groups: []
+    user_permissions: []
+- model: user.user
+  pk: 2
+  fields:
+    password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
+    last_login: null
+    is_superuser: false
+    username: user1
+    first_name: ''
+    last_name: ''
+    email: admin@ovni.com
+    is_staff: false
+    is_active: true
+    date_joined: 2022-10-05 16:50:52+00:00
+    groups:
+    - 1
+    user_permissions: []
+- model: user.user
+  pk: 3
+  fields:
+    password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
+    last_login: null
+    is_superuser: false
+    username: user2
+    first_name: ''
+    last_name: ''
+    email: admin@ovni.com
+    is_staff: false
+    is_active: true
+    date_joined: 2022-10-05 16:50:52+00:00
+    groups:
+    - 2
+    user_permissions: []
+- model: user.user
+  pk: 4
+  fields:
+    password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
+    last_login: null
+    is_superuser: false
+    username: user3
+    first_name: ''
+    last_name: ''
+    email: admin@ovni.com
+    is_staff: false
+    is_active: true
+    date_joined: 2022-10-05 16:50:52+00:00
+    groups:
+    - 3
+    user_permissions: []
+- model: user.user
+  pk: 5
+  fields:
+    password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
+    last_login: null
+    is_superuser: false
+    username: user4
+    first_name: ''
+    last_name: ''
+    email: admin@ovni.com
+    is_staff: false
+    is_active: true
+    date_joined: 2022-10-05 16:50:52.408019+00:00
+    groups: []
+    user_permissions: []
+
+
