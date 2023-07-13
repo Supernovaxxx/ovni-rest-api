@@ -1,9 +1,11 @@
+import itertools
+
 from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, get_groups_with_perms
 
 from ..models import Agency, Tour
 
@@ -41,7 +43,10 @@ def set_permissions(sender, instance, created, **kwargs):
     """
 
     if created:
-        group = Group.objects.get(name=f'{instance.agency.title} Managers')
+        groups = get_groups_with_perms(instance.agency)
+        perms = ['view_tour', 'change_tour', 'delete_tour']
 
-        for perm in ['view_tour', 'change_tour', 'delete_tour']:
+        groups_and_perms = itertools.product(groups, perms)
+
+        for group, perm in groups_and_perms:
             assign_perm(perm, group, instance)
