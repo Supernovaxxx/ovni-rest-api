@@ -18,3 +18,4 @@ venv/
 static/
 db.sqlite3
 **/migrations/
+.DS_Store
