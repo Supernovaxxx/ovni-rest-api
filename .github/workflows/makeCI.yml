@@ -1,0 +1,22 @@
+name: Makefile test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: init app
+      run: make init
+      
+    - name: make compile
+      run: make compile
+
