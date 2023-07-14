@@ -1,4 +1,4 @@
-name: Makefile CI - CPops
+name: Makefile test
 
 on:
   push:
@@ -16,4 +16,7 @@ jobs:
 
     - name: init app
       run: make init
+      
+    - name: make compile
+      run: make compile
 
