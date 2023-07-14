@@ -1,0 +1,6 @@
+
+*.md
+.env
+.pid
+db.sqlite3
+
