@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from guardian.admin import GuardedModelAdmin
 
-from .models import Trip
+from .models import Trip, Waypoint
 
 
 class TripAdmin(GuardedModelAdmin):
@@ -10,3 +10,4 @@ class TripAdmin(GuardedModelAdmin):
 
 
 admin.site.register(Trip, TripAdmin)
+admin.site.register(Waypoint)
