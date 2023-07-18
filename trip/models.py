@@ -16,7 +16,7 @@ class Waypoint(models.Model):
     TYPES = [
         # TODO
     ]
-    trip = models.ForeignKey(Trip, models.DO_NOTHING)
+    trip = models.ForeignKey(Trip, models.DO_NOTHING, related_name="waypoints")
     place = models.ForeignKey(Place, models.DO_NOTHING)
     order = models.IntegerField()
     type = models.CharField(max_length=50, choices=TYPES)
