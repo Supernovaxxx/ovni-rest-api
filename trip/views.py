@@ -10,8 +10,3 @@ class TripViewSet(viewsets.ModelViewSet):
     serializer_class = TripSerializer
     permission_classes = [permissions.DjangoObjectPermissions | IsReadOnly]
 
-
-class WaypointViewSet(viewsets.ModelViewSet):
-    queryset = Waypoint.objects.all()
-    serializer_class = WaypointSerializer
-    permission_classes = [permissions.DjangoObjectPermissions | IsReadOnly]
