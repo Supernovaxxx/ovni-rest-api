@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from .models import Trip, Waypoint
 
@@ -9,15 +10,9 @@ class WaypointSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TripSerializer(serializers.ModelSerializer):
+class TripSerializer(WritableNestedModelSerializer):
     waypoints = WaypointSerializer(many=True)
 
     class Meta:
         model = Trip
         fields = "__all__"
-
-    def create(self, validated_data):
-        waypoints = validated_data.pop("waypoints")
-        trip = Trip.objects.create(**validated_data)
-        Waypoint.objects.bulk_create(waypoints)
-        return trip
