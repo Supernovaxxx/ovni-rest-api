@@ -16,7 +16,10 @@ class Waypoint(models.Model):
     TYPES = [
         # TODO
     ]
-    trip = models.ForeignKey(Trip, models.DO_NOTHING, related_name="waypoints")
-    place = models.ForeignKey(Place, models.DO_NOTHING)
-    order = models.IntegerField()
+    trip = models.ForeignKey(Trip, models.PROTECT, related_name="waypoints")
+    place = models.ForeignKey(Place, models.CASCADE)
+    order = models.IntegerField(unique=True)
     type = models.CharField(max_length=50, choices=TYPES)
+
+    class Meta:
+        ordering = ["order"]
