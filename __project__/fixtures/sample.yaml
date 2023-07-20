@@ -120,4 +120,50 @@
     groups: []
     user_permissions: []
 
-
+- model: geo.place
+  pk: 1
+  fields:
+    title: '1'
+- model: geo.place
+  pk: 2
+  fields:
+    title: '2'
+- model: geo.place
+  pk: 3
+  fields:
+    title: '3'
+- model: geo.place
+  pk: 4
+  fields:
+    title: '4'
+- model: geo.place
+  pk: 5
+  fields:
+    title: '5'
+- model: agency.tour
+  pk: 1
+  fields:
+    agency: 1
+    event: 1
+- model: trip.trip
+  pk: 1
+  fields:
+    tour: 1
+- model: trip.waypoint
+  pk: 1
+  fields:
+    trip: 1
+    place: 1
+    order: 1
+- model: trip.waypoint
+  pk: 2
+  fields:
+    trip: 1
+    place: 2
+    order: 2
+- model: trip.waypoint
+  pk: 3
+  fields:
+    trip: 1
+    place: 3
+    order: 3
