@@ -13,13 +13,17 @@ class Trip(models.Model):
 
 
 class Waypoint(models.Model):
-    TYPES = [
-        # TODO
-    ]
-    trip = models.ForeignKey(Trip, models.PROTECT, related_name="waypoints")
+    class Types(models.TextChoices):
+        BOARDING = "Boarding"
+        DESTINATION = "Destination"
+
+    trip = models.ForeignKey(Trip, models.PROTECT, related_name="route", null=True)
     place = models.ForeignKey(Place, models.CASCADE)
-    order = models.IntegerField(unique=True)
-    type = models.CharField(max_length=50, choices=TYPES)
+    order = models.IntegerField(null=True)
+    type = models.CharField(max_length=50, choices=Types.choices)
 
     class Meta:
         ordering = ["order"]
+        constraints = [
+            models.UniqueConstraint(fields=["trip", "order"], name="no duplicate order")
+        ]
