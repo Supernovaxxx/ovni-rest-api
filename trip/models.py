@@ -15,7 +15,8 @@ class Trip(models.Model):
 class Waypoint(models.Model):
     class Types(models.TextChoices):
         BOARDING = "Boarding"
-        DESTINATION = "Destination"
+        STOP = "Stop"
+        ATTRACTIVE = "Attractive"
 
     trip = models.ForeignKey(Trip, models.PROTECT, related_name="route", null=True)
     place = models.ForeignKey(Place, models.CASCADE)
