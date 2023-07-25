@@ -18,8 +18,8 @@ class Waypoint(models.Model):
         STOP = "Stop"
         ATTRACTIVE = "Attractive"
 
-    trip = models.ForeignKey(Trip, models.PROTECT, related_name="route", null=True)
-    place = models.ForeignKey(Place, models.CASCADE)
+    trip = models.ForeignKey(Trip, models.CASCADE, related_name="route", null=True)
+    place = models.ForeignKey(Place, models.PROTECT)
     order = models.IntegerField(null=True)
     type = models.CharField(max_length=50, choices=Types.choices)
 
