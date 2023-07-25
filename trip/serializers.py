@@ -10,51 +10,40 @@ class WaypointListSerializer(serializers.ListSerializer):
         trip = self.root.instance
 
         # Create a list with all the data that's currently in the database
-        instance_data_list = [waypoint
-                              for waypoint
-                              in instance.all()]
+        instance_data_list = instance.all()
 
         # Create a list with the validated data passed in the request
-        validated_data_list = [Waypoint(trip=trip, order=i, **waypoint)
-                               for (i, waypoint)
-                               in enumerate(validated_data)]
+        validated_data_list = [Waypoint(trip=trip, order=i, **waypoint) for (i, waypoint) in enumerate(validated_data)]
 
         # Create a list of tuples to compare incoming data with persisted data padding to the longest with None value
         comparison_list = list(it.zip_longest(instance_data_list, validated_data_list))
 
-        # Queue objects for creation if the incoming data has more waypoints than persisted data
-        bulk_create_list = [new_waypoint
-                            for (old_waypoint, new_waypoint)
-                            in comparison_list
-                            if old_waypoint is None and new_waypoint]
+        create_queue = []
+        delete_queue = []
+        update_queue = []
 
-        # Queue objects for deletion if the incoming data has fewer waypoints than persisted data
-        bulk_delete_list = [old_waypoint
-                            for (old_waypoint, new_waypoint)
-                            in comparison_list
-                            if new_waypoint is None and old_waypoint]
+        for old_waypoint, new_waypoint in comparison_list:
+            # Queue objects for creation if the incoming data has more waypoints than persisted data
+            if old_waypoint is None and new_waypoint:
+                create_queue.append(new_waypoint)
+            # Queue objects for deletion if the incoming data has fewer waypoints than persisted data
+            elif new_waypoint is None and old_waypoint:
+                delete_queue.append(old_waypoint.pk)
+            # Queue objects for updating after comparing incoming and persisted data
+            elif old_waypoint and new_waypoint:
+                for field in Waypoint._meta.get_fields():
+                    if getattr(old_waypoint, field.name) != getattr(new_waypoint, field.name) and field.name != "id":
+                        setattr(old_waypoint, field.name, getattr(new_waypoint, field.name))
+                update_queue.append(old_waypoint)
 
-        # Map the objects that need updating if they are different and exist in incoming and persisted data
-        bulk_update_dict = {old_waypoint: new_waypoint
-                            for old_waypoint, new_waypoint
-                            in comparison_list
-                            if old_waypoint and new_waypoint and old_waypoint != new_waypoint}
-
-        bulk_update_list = []
-
-        for old_waypoint, new_waypoint in bulk_update_dict.items():
-            old_waypoint.order = new_waypoint.order
-            old_waypoint.place = new_waypoint.place
-            bulk_update_list.append(old_waypoint)
-
-        # Perform the necessary creation, updates and deletions
-        Waypoint.objects.filter(pk__in=[waypoint.pk for waypoint in bulk_delete_list]).delete()
-        Waypoint.objects.bulk_create(bulk_create_list)
-        Waypoint.objects.bulk_update(bulk_update_list, fields=["order", "place"])
+        # Perform the necessary creations, updates and deletions
+        Waypoint.objects.filter(pk__in=delete_queue).delete()
+        Waypoint.objects.bulk_create(create_queue)
+        Waypoint.objects.bulk_update(update_queue, fields=["place", "order"])
 
 
 class WaypointSerializer(serializers.ModelSerializer):
-    order = serializers.IntegerField(read_only=True)
+    order = serializers.IntegerField(write_only=True, required=False)
 
     class Meta:
         model = Waypoint
