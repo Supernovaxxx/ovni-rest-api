@@ -155,15 +155,18 @@
     trip: 1
     place: 1
     order: 0
+    type: Boarding
 - model: trip.waypoint
   pk: 2
   fields:
     trip: 1
     place: 2
     order: 1
+    type: Boarding
 - model: trip.waypoint
   pk: 3
   fields:
     trip: 1
     place: 3
     order: 2
+    type: Boarding
