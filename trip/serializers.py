@@ -51,7 +51,8 @@ class WaypointListSerializer(serializers.ListSerializer):
         # Perform the necessary creations, updates and deletions
         Waypoint.objects.filter(pk__in=delete_queue).delete()
         Waypoint.objects.bulk_create(create_queue)
-        Waypoint.objects.bulk_update(update_queue, fields=updated_fields)
+        if updated_fields:
+            Waypoint.objects.bulk_update(update_queue, fields=updated_fields)
 
 
 class WaypointSerializer(serializers.ModelSerializer):
