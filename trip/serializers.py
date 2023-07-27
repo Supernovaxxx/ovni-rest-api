@@ -5,8 +5,9 @@ from rest_framework import serializers
 from .models import Trip, Waypoint
 
 
-def _generate_waypoints_list(trip, waypoints):
-    return [Waypoint(trip=trip, order=i, **waypoint) for (i, waypoint) in enumerate(waypoints)]
+def _generate_route_from_input_data(trip, waypoints):
+    for i, waypoint in enumerate(waypoints):
+        yield Waypoint(trip=trip, order=i, **waypoint)
 
 
 class WaypointListSerializer(serializers.ListSerializer):
@@ -17,13 +18,13 @@ class WaypointListSerializer(serializers.ListSerializer):
         trip = self.root.instance
 
         # Create a list with all the data that's currently in the database
-        instance_data_list = instance.all()
+        instance_route = instance.all()
 
         # Create a list with the validated data passed in the request
-        validated_data_list = _generate_waypoints_list(trip, validated_data)
+        incoming_route = _generate_route_from_input_data(trip, validated_data)
 
         # Create a list of tuples to compare incoming data with persisted data padding to the longest with None value
-        comparison_list = list(it.zip_longest(instance_data_list, validated_data_list))
+        comparison_list = list(it.zip_longest(instance_route, incoming_route))
 
         create_queue = []
         delete_queue = []
@@ -56,11 +57,9 @@ class WaypointListSerializer(serializers.ListSerializer):
 
 
 class WaypointSerializer(serializers.ModelSerializer):
-    order = serializers.IntegerField(write_only=True, required=False)
-
     class Meta:
         model = Waypoint
-        exclude = ["trip", "id"]
+        exclude = ["trip", "id", "order"]
         list_serializer_class = WaypointListSerializer
 
 
@@ -75,7 +74,7 @@ class TripSerializer(serializers.ModelSerializer):
         route = validated_data.pop("route")
         trip = Trip.objects.create(**validated_data)
 
-        bulk_list = _generate_waypoints_list(trip, route)
+        bulk_list = _generate_route_from_input_data(trip, route)
         Waypoint.objects.bulk_create(bulk_list)
 
         return trip
