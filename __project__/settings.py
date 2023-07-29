@@ -28,6 +28,8 @@ ROOT_DIR = PROJECT_DIR.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY') or get_random_secret_key()
 
+GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
