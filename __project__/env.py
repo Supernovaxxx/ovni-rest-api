@@ -25,6 +25,7 @@ env = environ.Env(
     CSRF_TRUSTED_ORIGINS=(list, ['http://*', 'https://*']),
 
     STATIC_DIR=(str, 'static'),
+    GOOGLE_MAPS_API_KEY=(str, None)
 )
 
 # Manage chosen .env file consumption.

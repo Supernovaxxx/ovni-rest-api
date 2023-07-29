@@ -119,3 +119,9 @@
     date_joined: 2022-10-05 16:50:52.408019+00:00
     groups: []
     user_permissions: []
+
+- model: agency.tour
+  pk: 1
+  fields:
+    agency: 1
+    event: 1
