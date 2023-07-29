@@ -9,3 +9,4 @@ class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
     permission_classes = [permissions.DjangoObjectPermissions | IsReadOnly]
+
