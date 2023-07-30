@@ -1,29 +1,19 @@
-FROM python:3.12.0b3 AS build
-
-WORKDIR /tmp
-
-COPY requirements.txt Makefile /tmp/
-RUN apt update \
-    && make init
-COPY . .
-
 FROM python:3.12.0b3
 
-RUN mkdir -p /home/app \
-    && groupadd -r USERapp \
+ENV PYTHONUNBUFFERED 1
+ARG WORKDIR=/opt
+WORKDIR $WORKDIR
+
+COPY requirements.txt Makefile ${WORKDIR}
+RUN make init
+COPY . .
+
+RUN groupadd -r USERapp \
     && useradd -r -g USERapp USERapp
 
-ENV HOME=/home/app
-WORKDIR $HOME
-
-COPY --from=build /tmp/requirements.txt .
-COPY --from=build /tmp/Makefile .
-COPY --from=build /tmp .
-
-ENV PYTHONUNBUFFERED 1
-EXPOSE 8000
-
-RUN chown -R USERapp:USERapp $HOME
+RUN chown -R USERapp:USERapp $WORKDIR
 USER USERapp
+
+EXPOSE 8000
 
 CMD make execute
