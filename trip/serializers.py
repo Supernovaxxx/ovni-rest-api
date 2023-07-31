@@ -1,7 +1,5 @@
 import itertools as it
 
-from django.core.exceptions import ObjectDoesNotExist
-
 from rest_framework import serializers
 
 from .models import Trip, Waypoint
@@ -12,11 +10,10 @@ from geo.serializers import PlaceSerializer
 def _generate_route_from_input_data(trip, waypoints):
     for i, waypoint in enumerate(waypoints):
         place_data = waypoint.pop("place")
-        try:
-            place = Place.objects.get(place_id=place_data["place_id"])
-            place = PlaceSerializer().update(place, place_data)
-        except ObjectDoesNotExist:
-            place = PlaceSerializer().create(place_data)
+        place_id = place_data["place_id"]
+
+        place, _ = Place.objects.get_or_create(place_id=place_id)
+
         yield Waypoint(trip=trip, order=i, place=place, **waypoint)
 
 
