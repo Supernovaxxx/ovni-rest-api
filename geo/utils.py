@@ -19,17 +19,10 @@ def consume_place_data_from_google_api(**kwargs):
     place_data = json.loads(response.text)["results"][0]
 
     ret["formatted_address"] = place_data["formatted_address"]
+    ret["city"] = place_data["address_components"][3]["short_name"]
+    ret["state"] = place_data["address_components"][4]["short_name"]
+    ret["country"] = place_data["address_components"][5]["short_name"]
     ret["latitude"] = place_data["geometry"]["location"]["lat"]
     ret["longitude"] = place_data["geometry"]["location"]["lng"]
-
-    for item in place_data["address_components"]:
-        if "administrative_area_level_2" in item["types"]:
-            ret["city"] = item["short_name"]
-
-        if "administrative_area_level_1" in item["types"]:
-            ret["state"] = item["short_name"]
-
-        if "country" in item["types"]:
-            ret["country"] = item["short_name"]
 
     return ret
