@@ -7,28 +7,20 @@ from geo.models import Place
 from geo.serializers import PlaceSerializer
 
 
-def _generate_route_from_input_data(waypoints, trip=None):
-    for i, waypoint in enumerate(waypoints):
-        place_data = waypoint.pop("place")
-        place_id = place_data["place_id"]
-
-        place, _ = Place.objects.get_or_create(place_id=place_id)
-
-        yield Waypoint(trip=trip, order=i, place=place, **waypoint)
-
-
 class WaypointListSerializer(serializers.ListSerializer):
+
+    def create(self, validated_data):
+        return Waypoint.objects.bulk_create(self._generate_route_from_input_data(validated_data))
+
     def update(self, instance, validated_data):
         fields_to_update = self.child.fields
         updated_fields = []
-
-        trip = self.root.instance
 
         # Create a list with all the data that's currently in the database
         instance_route = instance.all()
 
         # Create a list with the validated data passed in the request
-        incoming_route = _generate_route_from_input_data(validated_data, trip=trip)
+        incoming_route = self._generate_route_from_input_data(validated_data)
 
         # Create a list of tuples to compare incoming data with persisted data padding to the longest with None value
         comparison_list = list(it.zip_longest(instance_route, incoming_route))
@@ -62,6 +54,17 @@ class WaypointListSerializer(serializers.ListSerializer):
         if updated_fields:
             Waypoint.objects.bulk_update(update_queue, fields=updated_fields)
 
+    def _generate_route_from_input_data(self, validated_data):
+        trip = self.root.instance
+
+        for i, waypoint in enumerate(validated_data):
+            yield Waypoint(
+                trip=trip,
+                order=i,
+                place=Place.objects.get_or_create(place_id=waypoint.place.place_id),
+                **waypoint
+            )
+
 
 class WaypointSerializer(serializers.ModelSerializer):
     place = PlaceSerializer()
@@ -80,22 +83,13 @@ class TripSerializer(serializers.ModelSerializer):
         exclude = ["id"]
 
     def create(self, validated_data):
-        input_route = validated_data.pop("route")
-        route_waypoints = _generate_route_from_input_data(input_route)
-
-        route = Waypoint.objects.bulk_create(route_waypoints)  # Route creation must happen before trip creation
-
-        trip = Trip.objects.create(**validated_data)
-
-        for waypoint in route:
-            waypoint.trip = trip
-
-        Waypoint.objects.bulk_update(route, fields=["trip"])
+        trip = super().create(validated_data)
+        self.route.create(trip.route)
 
         return trip
 
     def update(self, instance, validated_data):
-        nested_serializer = self.fields["route"]
+        nested_serializer = self.route
         nested_instance = instance.route
         nested_data = validated_data.pop("route")
 
