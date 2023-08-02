@@ -7,7 +7,7 @@ from geo.models import Place
 from geo.serializers import PlaceSerializer
 
 
-def _generate_route_from_input_data(trip, waypoints):
+def _generate_route_from_input_data(waypoints, trip=None):
     for i, waypoint in enumerate(waypoints):
         place_data = waypoint.pop("place")
         place_id = place_data["place_id"]
@@ -28,7 +28,7 @@ class WaypointListSerializer(serializers.ListSerializer):
         instance_route = instance.all()
 
         # Create a list with the validated data passed in the request
-        incoming_route = _generate_route_from_input_data(trip, validated_data)
+        incoming_route = _generate_route_from_input_data(validated_data, trip=trip)
 
         # Create a list of tuples to compare incoming data with persisted data padding to the longest with None value
         comparison_list = list(it.zip_longest(instance_route, incoming_route))
@@ -80,11 +80,17 @@ class TripSerializer(serializers.ModelSerializer):
         exclude = ["id"]
 
     def create(self, validated_data):
-        route = validated_data.pop("route")
+        input_route = validated_data.pop("route")
+        route_waypoints = _generate_route_from_input_data(input_route)
+
+        route = Waypoint.objects.bulk_create(route_waypoints)  # Route creation must happen before trip creation
+
         trip = Trip.objects.create(**validated_data)
 
-        bulk_list = _generate_route_from_input_data(trip, route)
-        Waypoint.objects.bulk_create(bulk_list)
+        for waypoint in route:
+            waypoint.trip = trip
+
+        Waypoint.objects.bulk_update(route, fields=["trip"])
 
         return trip
 

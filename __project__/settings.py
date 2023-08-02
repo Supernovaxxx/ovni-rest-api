@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'guardian',
+    'drf_standardized_errors',
 
     'management',
     'event',
@@ -168,4 +169,4 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-AUTH_USER_MODEL = "management.User"
+AUTH_USER_MODEL = "user.User"
