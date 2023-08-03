@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 from django.core.management.utils import get_random_secret_key
+from django.core.exceptions import ImproperlyConfigured
 
 from .env import env
 
@@ -28,7 +29,11 @@ ROOT_DIR = PROJECT_DIR.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY') or get_random_secret_key()
 
+
 GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
+if not GOOGLE_MAPS_API_KEY:
+    raise ImproperlyConfigured
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
