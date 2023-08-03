@@ -58,10 +58,12 @@ class WaypointListSerializer(serializers.ListSerializer):
         trip = self.root.instance
 
         for i, waypoint in enumerate(validated_data):
+            place, _ = Place.objects.get_or_create(place_id=waypoint.pop("place")["place_id"])
+            print("waypoint: ", waypoint)
             yield Waypoint(
                 trip=trip,
                 order=i,
-                place=Place.objects.get_or_create(place_id=waypoint.place.place_id),
+                place=place,
                 **waypoint
             )
 
@@ -83,16 +85,21 @@ class TripSerializer(serializers.ModelSerializer):
         exclude = ["id"]
 
     def create(self, validated_data):
+        route = validated_data.pop("route")
+
         trip = super().create(validated_data)
-        self.route.create(trip.route)
+
+        waypoint_list_serializer = self.fields["route"]
+
+        trip.route.set(waypoint_list_serializer.create(route))
 
         return trip
 
     def update(self, instance, validated_data):
-        nested_serializer = self.route
-        nested_instance = instance.route
-        nested_data = validated_data.pop("route")
+        waypoint_list_serializer = self.fields["route"]
+        instance_route = instance.route
+        incoming_route = validated_data.pop("route")
 
-        nested_serializer.update(nested_instance, nested_data)
+        waypoint_list_serializer.update(instance_route, incoming_route)
 
         return super(TripSerializer, self).update(instance, validated_data)
