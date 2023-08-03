@@ -7,10 +7,20 @@ from geo.models import Place
 from geo.serializers import PlaceSerializer
 
 
+def _generate_route_from_input_data(validated_data):
+    for i, waypoint in enumerate(validated_data):
+        place, _ = Place.objects.get_or_create(place_id=waypoint.pop("place")["place_id"])
+        yield Waypoint(
+            order=i,
+            place=place,
+            **waypoint
+        )
+
+
 class WaypointListSerializer(serializers.ListSerializer):
 
     def create(self, validated_data):
-        return Waypoint.objects.bulk_create(self._generate_route_from_input_data(validated_data))
+        return Waypoint.objects.bulk_create(_generate_route_from_input_data(validated_data))
 
     def update(self, instance, validated_data):
         fields_to_update = self.child.fields
@@ -20,7 +30,7 @@ class WaypointListSerializer(serializers.ListSerializer):
         instance_route = instance.all()
 
         # Create a list with the validated data passed in the request
-        incoming_route = self._generate_route_from_input_data(validated_data)
+        incoming_route = _generate_route_from_input_data(validated_data)
 
         # Create a list of tuples to compare incoming data with persisted data padding to the longest with None value
         comparison_list = list(it.zip_longest(instance_route, incoming_route))
@@ -54,18 +64,6 @@ class WaypointListSerializer(serializers.ListSerializer):
         if updated_fields:
             Waypoint.objects.bulk_update(update_queue, fields=updated_fields)
 
-    def _generate_route_from_input_data(self, validated_data):
-        trip = self.root.instance
-
-        for i, waypoint in enumerate(validated_data):
-            place, _ = Place.objects.get_or_create(place_id=waypoint.pop("place")["place_id"])
-            yield Waypoint(
-                trip=trip,
-                order=i,
-                place=place,
-                **waypoint
-            )
-
 
 class WaypointSerializer(serializers.ModelSerializer):
     place = PlaceSerializer()
@@ -90,7 +88,16 @@ class TripSerializer(serializers.ModelSerializer):
 
         waypoint_list_serializer = self.fields["route"]
 
-        trip.route.set(waypoint_list_serializer.create(route))
+        # Set up relation between each future new waypoint with newly created trip because
+        # 'trip_waypoint.trip_id' can't be null when we create the waypoints.
+        for waypoint in route:
+            waypoint["trip_id"] = trip.id
+
+        try:
+            trip.route.set(waypoint_list_serializer.create(route))
+        except ValueError as e:
+            trip.delete()
+            raise e
 
         return trip
 
