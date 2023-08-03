@@ -59,7 +59,6 @@ class WaypointListSerializer(serializers.ListSerializer):
 
         for i, waypoint in enumerate(validated_data):
             place, _ = Place.objects.get_or_create(place_id=waypoint.pop("place")["place_id"])
-            print("waypoint: ", waypoint)
             yield Waypoint(
                 trip=trip,
                 order=i,
