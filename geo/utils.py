@@ -6,6 +6,7 @@ from __project__.settings import GOOGLE_MAPS_API_KEY
 
 def consume_place_data_from_google_api(**kwargs):
     geocode_base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+
     try:
         response = requests.get(geocode_base_url,
                                 params={"place_id": kwargs["place_id"],
@@ -13,7 +14,6 @@ def consume_place_data_from_google_api(**kwargs):
                                 )
 
         response.raise_for_status()
-
     except requests.exceptions.HTTPError as e:
         raise ValueError(e)
 
