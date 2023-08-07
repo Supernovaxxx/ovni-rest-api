@@ -9,16 +9,12 @@ from geo.serializers import PlaceSerializer
 
 def _generate_route_from_input_data(validated_data):
     for i, waypoint in enumerate(validated_data):
-        place, _ = Place.objects.get_or_create(place_id=waypoint.pop("place")["place_id"])
-        yield Waypoint(
-            order=i,
-            place=place,
-            **waypoint
-        )
+        place_id = waypoint.pop("place").get("place_id")
+        place, _ = Place.objects.get_or_create_from_maps_api(place_id)
+        yield Waypoint(order=i, place=place, **waypoint)
 
 
 class WaypointListSerializer(serializers.ListSerializer):
-
     def create(self, validated_data):
         return Waypoint.objects.bulk_create(_generate_route_from_input_data(validated_data))
 
