@@ -9,8 +9,7 @@ from geo.serializers import PlaceSerializer
 
 def _generate_route_from_input_data(validated_data):
     for i, waypoint in enumerate(validated_data):
-        place_id = waypoint.pop("place").get("place_id")
-        place, _ = Place.objects.get_or_create_from_maps_api(place_id)
+        place = waypoint.pop("place_id")
         yield Waypoint(order=i, place=place, **waypoint)
 
 
@@ -61,17 +60,8 @@ class WaypointListSerializer(serializers.ListSerializer):
             Waypoint.objects.bulk_update(update_queue, fields=updated_fields)
 
 
-class WaypointWriteSerializer(serializers.ModelSerializer):
-    place = PlaceSerializer()
-
-    class Meta:
-        model = Waypoint
-        exclude = ["trip", "id", "order"]
-        list_serializer_class = WaypointListSerializer
-
-
-class WaypointReadSerializer(serializers.ModelSerializer):
-    place_id = serializers.ReadOnlyField(source="place.place_id")
+class WaypointSerializer(serializers.ModelSerializer):
+    place_id = PlaceSerializer()
     formatted_address = serializers.ReadOnlyField(source="place.formatted_address")
     latitude = serializers.ReadOnlyField(source="place.latitude")
     longitude = serializers.ReadOnlyField(source="place.longitude")
@@ -79,10 +69,11 @@ class WaypointReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Waypoint
         exclude = ["trip", "id", "order", "place"]
+        list_serializer_class = WaypointListSerializer
 
 
-class TripWriteSerializer(serializers.ModelSerializer):
-    route = WaypointWriteSerializer(many=True)
+class TripSerializer(serializers.ModelSerializer):
+    route = WaypointSerializer(many=True)
 
     class Meta:
         model = Trip
@@ -115,12 +106,4 @@ class TripWriteSerializer(serializers.ModelSerializer):
 
         waypoint_list_serializer.update(instance_route, incoming_route)
 
-        return super(TripWriteSerializer, self).update(instance, validated_data)
-
-
-class TripReadSerializer(serializers.ModelSerializer):
-    route = WaypointReadSerializer(many=True)
-
-    class Meta:
-        model = Trip
-        exclude = ["id"]
+        return super(TripSerializer, self).update(instance, validated_data)

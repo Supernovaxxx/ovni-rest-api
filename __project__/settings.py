@@ -169,10 +169,13 @@ REST_FRAMEWORK = {
 }
 
 
+DRF_STANDARDIZED_ERRORS = {"ENABLE_IN_DEBUG_FOR_UNHANDLED_EXCEPTIONS": True}
+
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
 
 
-AUTH_USER_MODEL = "user.User"
+AUTH_USER_MODEL = "management.User"
