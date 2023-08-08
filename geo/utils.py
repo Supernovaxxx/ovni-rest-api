@@ -9,7 +9,7 @@ def consume_place_data_from_google_api(place_id):
 
     try:
         response = requests.get(geocode_base_url,
-                                params={"place_id": kwargs["place_id"],
+                                params={"place_id": place_id,
                                         "key": GOOGLE_MAPS_API_KEY},
                                 )
 
