@@ -61,7 +61,7 @@ class WaypointListSerializer(serializers.ListSerializer):
             Waypoint.objects.bulk_update(update_queue, fields=updated_fields)
 
 
-class WaypointSerializer(serializers.ModelSerializer):
+class WaypointWriteSerializer(serializers.ModelSerializer):
     place = PlaceSerializer()
 
     class Meta:
@@ -70,8 +70,19 @@ class WaypointSerializer(serializers.ModelSerializer):
         list_serializer_class = WaypointListSerializer
 
 
-class TripSerializer(serializers.ModelSerializer):
-    route = WaypointSerializer(many=True)
+class WaypointReadSerializer(serializers.ModelSerializer):
+    place_id = serializers.ReadOnlyField(source="place.place_id")
+    formatted_address = serializers.ReadOnlyField(source="place.formatted_address")
+    latitude = serializers.ReadOnlyField(source="place.latitude")
+    longitude = serializers.ReadOnlyField(source="place.longitude")
+
+    class Meta:
+        model = Waypoint
+        exclude = ["trip", "id", "order", "place"]
+
+
+class TripWriteSerializer(serializers.ModelSerializer):
+    route = WaypointWriteSerializer(many=True)
 
     class Meta:
         model = Trip
@@ -104,4 +115,12 @@ class TripSerializer(serializers.ModelSerializer):
 
         waypoint_list_serializer.update(instance_route, incoming_route)
 
-        return super(TripSerializer, self).update(instance, validated_data)
+        return super(TripWriteSerializer, self).update(instance, validated_data)
+
+
+class TripReadSerializer(serializers.ModelSerializer):
+    route = WaypointReadSerializer(many=True)
+
+    class Meta:
+        model = Trip
+        exclude = ["id"]
