@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'guardian',
 
-    'user',
+    'management',
     'event',
     'agency',
     'trip',
@@ -166,4 +166,4 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-AUTH_USER_MODEL = "user.User"
+AUTH_USER_MODEL = "management.User"
