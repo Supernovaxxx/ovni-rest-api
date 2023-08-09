@@ -32,7 +32,7 @@ SECRET_KEY = env('SECRET_KEY') or get_random_secret_key()
 
 GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
 if not GOOGLE_MAPS_API_KEY:
-    raise ImproperlyConfigured
+    raise ImproperlyConfigured('Missing GOOGLE_MAPS_API_KEY environment variable.')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

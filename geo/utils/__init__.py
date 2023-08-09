@@ -1,13 +1,8 @@
-import requests
-
-from __project__.settings import GOOGLE_MAPS_API_KEY
+from .google_maps import GOOGLE_MAPS_API_CLIENT
 
 
 def get_place_data_from_geocode_api(place_id):
-    geocode_data = _get_geocode_data(
-        place_id=place_id,
-        key=GOOGLE_MAPS_API_KEY,
-    )
+    geocode_data = _get_geocode_data(place_id=place_id)
 
     ret = {
         "place_id": place_id,
@@ -31,16 +26,15 @@ def get_place_data_from_geocode_api(place_id):
 
 def _get_geocode_data(**params):
     """Interface with Google Maps Geocode API"""
-    geocode_api_url = "https://maps.googleapis.com/maps/api/geocode/json"
-
     try:
-        response = requests.get(geocode_api_url, **params)
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        raise ValueError(e)
+        result = GOOGLE_MAPS_API_CLIENT.geocode(**params)
+    except Exception as e:
+        raise GeocodeDataNotFoundError
 
-    result = response.json()["results"]
     if not result:
-        raise ValueError(f"The provided 'place_id' has no correspondence on Google Maps Geocode API")
+        raise GeocodeDataNotFoundError
 
     return result[0]
+
+
+GeocodeDataNotFoundError = ValueError(f"The provided 'place_id' has no correspondence on Google Maps Geocode API")
