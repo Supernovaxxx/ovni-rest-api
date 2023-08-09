@@ -9,6 +9,7 @@ django-environ~=0.9
 djangorestframework~=3.14
 django-guardian~=2.4
 drf_standardized_errors~=0.12
+googlemaps~=4.10
 whitenoise~=6.2
 gunicorn~=21.1
 PyYAML~=6.0
