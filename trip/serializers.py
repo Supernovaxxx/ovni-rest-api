@@ -9,8 +9,7 @@ from geo.serializers import PlaceSerializer
 
 def _generate_route_from_input_data(validated_data):
     for i, waypoint in enumerate(validated_data):
-        place = waypoint.pop("place_id")
-        yield Waypoint(order=i, place=place, **waypoint)
+        yield Waypoint(order=i, **waypoint)
 
 
 class WaypointListSerializer(serializers.ListSerializer):
@@ -61,7 +60,7 @@ class WaypointListSerializer(serializers.ListSerializer):
 
 
 class WaypointSerializer(serializers.ModelSerializer):
-    place_id = PlaceSerializer()
+    place_id = PlaceSerializer(source='place')
 
     class Meta:
         model = Waypoint
@@ -69,17 +68,18 @@ class WaypointSerializer(serializers.ModelSerializer):
         list_serializer_class = WaypointListSerializer
 
     def to_representation(self, instance):
+        """Overrides Waypoint representation to include flattened Place attributes"""
         representation = super().to_representation(instance)
-        for field in instance.place._meta.get_fields():
-            field_name = field.name
-            if field_name not in ["waypoints", "place_id"]:
-                representation[field_name] = getattr(instance.place, field_name)
+
+        place_representation = representation.pop('place_id')
+        for field_name in place_representation:
+            representation[field_name] = place_representation[field_name]
 
         return representation
 
 
 class TripSerializer(serializers.ModelSerializer):
-    route = WaypointSerializer(many=True)
+    route = WaypointSerializer(many=True, min_length=1)
 
     class Meta:
         model = Trip
