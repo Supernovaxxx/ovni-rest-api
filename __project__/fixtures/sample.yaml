@@ -41,7 +41,7 @@
     title: agency 3
 
 # Users:
-- model: user.user
+- model: management.user
   pk: 1
   fields:
     password: pbkdf2_sha256$600000$kM8VJVhfx4yd20mLNYZkWa$63EQSRr8C4J9zHJrUVxOjfkXnzmfG9UXWtppYOl6GOM=
@@ -56,7 +56,7 @@
     date_joined: 2022-10-05 16:50:52.408019+00:00
     groups: []
     user_permissions: []
-- model: user.user
+- model: management.user
   pk: 2
   fields:
     password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
@@ -72,7 +72,7 @@
     groups:
     - 1
     user_permissions: []
-- model: user.user
+- model: management.user
   pk: 3
   fields:
     password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
@@ -88,7 +88,7 @@
     groups:
     - 2
     user_permissions: []
-- model: user.user
+- model: management.user
   pk: 4
   fields:
     password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
@@ -104,7 +104,7 @@
     groups:
     - 3
     user_permissions: []
-- model: user.user
+- model: management.user
   pk: 5
   fields:
     password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
@@ -119,54 +119,3 @@
     date_joined: 2022-10-05 16:50:52.408019+00:00
     groups: []
     user_permissions: []
-
-- model: geo.place
-  pk: 1
-  fields:
-    title: '1'
-- model: geo.place
-  pk: 2
-  fields:
-    title: '2'
-- model: geo.place
-  pk: 3
-  fields:
-    title: '3'
-- model: geo.place
-  pk: 4
-  fields:
-    title: '4'
-- model: geo.place
-  pk: 5
-  fields:
-    title: '5'
-- model: agency.tour
-  pk: 1
-  fields:
-    agency: 1
-    event: 1
-- model: trip.trip
-  pk: 1
-  fields:
-    tour: 1
-- model: trip.waypoint
-  pk: 1
-  fields:
-    trip: 1
-    place: 1
-    order: 0
-    type: Boarding
-- model: trip.waypoint
-  pk: 2
-  fields:
-    trip: 1
-    place: 2
-    order: 1
-    type: Boarding
-- model: trip.waypoint
-  pk: 3
-  fields:
-    trip: 1
-    place: 3
-    order: 2
-    type: Boarding

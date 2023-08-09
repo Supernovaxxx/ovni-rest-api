@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 
 from .models import Event
 from .serializers import EventSerializer
-from agency.permissions import IsReadOnly
+from management.permissions import IsReadOnly
 
 
 class EventViewSet(viewsets.ModelViewSet):
