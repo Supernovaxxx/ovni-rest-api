@@ -1,14 +1,17 @@
 from django.db.models import QuerySet
 
-from .utils import consume_place_data_from_google_api
+from .utils import get_place_data_from_geocode_api
 
 
 class PlaceQuerySet(QuerySet):
     def create_from_maps_api(self, place_id):
-        consumed_place_data = consume_place_data_from_google_api(place_id)
-        return self.create(**consumed_place_data)
+        """Creates a Place instance from Google Maps Geocode API data."""
+        return self.create(
+            **get_place_data_from_geocode_api(place_id)
+        )
 
     def get_or_create_from_maps_api(self, place_id):
+        """Mimics get_or_create() behavior, but it consumes data from Google Maps Geocode API to perform creation."""
         self._for_write = True
         try:
             return self.get(place_id=place_id), False
