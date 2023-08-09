@@ -62,14 +62,20 @@ class WaypointListSerializer(serializers.ListSerializer):
 
 class WaypointSerializer(serializers.ModelSerializer):
     place_id = PlaceSerializer()
-    formatted_address = serializers.ReadOnlyField(source="place.formatted_address")
-    latitude = serializers.ReadOnlyField(source="place.latitude")
-    longitude = serializers.ReadOnlyField(source="place.longitude")
 
     class Meta:
         model = Waypoint
         exclude = ["trip", "id", "order", "place"]
         list_serializer_class = WaypointListSerializer
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        for field in instance.place._meta.get_fields():
+            field_name = field.name
+            if field_name not in ["waypoints", "place_id"]:
+                representation[field_name] = getattr(instance.place, field_name)
+
+        return representation
 
 
 class TripSerializer(serializers.ModelSerializer):
