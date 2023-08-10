@@ -1,19 +1,10 @@
-from django.db.models.functions import Now
-from django.db.models import Manager, BooleanField, ExpressionWrapper, Q
+from django.db.models import QuerySet, Manager
 
 
-class EventManager(Manager):
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .annotate(
-                is_active=ExpressionWrapper(
-                    Q(end_date__gte=Now()),
-                    output_field=BooleanField(),
-                )
-            )
-        )
-
+class EventQuerySet(QuerySet):
     def active(self):
         return self.filter(is_active=True)
+
+
+class EventManager(Manager.from_queryset(EventQuerySet)):
+    pass
