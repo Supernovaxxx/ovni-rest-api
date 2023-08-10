@@ -1,6 +1,8 @@
 from django.db import models
 from .managers import PlaceManager
 
+from .fields import CoordinateAnnotationField, GoogleMapsURLAnnotationField
+
 
 class Place(models.Model):
     place_id = models.CharField(max_length=255, primary_key=True)
@@ -10,5 +12,8 @@ class Place(models.Model):
     country = models.CharField(max_length=50, null=True, blank=True)
     latitude = models.DecimalField(decimal_places=8, max_digits=20, null=True, blank=True)
     longitude = models.DecimalField(decimal_places=8, max_digits=20, null=True, blank=True)
+
+    coordinates = CoordinateAnnotationField()
+    google_maps_url = GoogleMapsURLAnnotationField()
 
     objects = PlaceManager()
