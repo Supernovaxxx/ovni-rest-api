@@ -1,4 +1,6 @@
-from django.db.models import QuerySet
+from django.db import models
+from django.db.models import QuerySet, Manager, Value, ExpressionWrapper
+from django.db.models.functions import Concat
 
 from .utils import get_place_data_from_geocode_api
 
@@ -17,3 +19,26 @@ class PlaceQuerySet(QuerySet):
             return self.get(place_id=place_id), False
         except self.model.DoesNotExist:
             return self.create_from_maps_api(place_id), True
+
+
+class PlaceManager(Manager.from_queryset(PlaceQuerySet)):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .annotate(
+                coordinate=ExpressionWrapper(
+                    Concat('latitude', Value(', '), 'longitude'),
+                    output_field=models.CharField()
+                ),
+                google_maps_url=ExpressionWrapper(
+                    Concat(
+                        Value('https://www.google.com/maps/search/'),
+                        Value('?api=1'),
+                        Value('&query='), 'country',
+                        Value('&query_place_id='), 'place_id',
+                    ),
+                    output_field=models.CharField()
+                )
+            )
+        )

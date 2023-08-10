@@ -1,4 +1,4 @@
-from django.utils import timezone
+from django.db.models.functions import Now
 from django.db.models import Manager, BooleanField, ExpressionWrapper, Q
 
 
@@ -9,7 +9,7 @@ class EventManager(Manager):
             .get_queryset()
             .annotate(
                 is_active=ExpressionWrapper(
-                    Q(end_date__gte=timezone.now()),
+                    Q(end_date__gte=Now()),
                     output_field=BooleanField(),
                 )
             )
