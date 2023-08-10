@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q, F
 
 from .managers import EventManager
+from .fields import IsUpcomingAnnotationField
 
 
 class Event(models.Model):
@@ -9,6 +10,8 @@ class Event(models.Model):
     subtitle = models.TextField()
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+
+    is_upcoming = IsUpcomingAnnotationField()
 
     objects = EventManager()
 

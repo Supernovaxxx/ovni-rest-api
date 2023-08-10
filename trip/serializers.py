@@ -2,32 +2,33 @@ import itertools as it
 
 from rest_framework import serializers
 
-from .models import Trip, Waypoint
-from geo.models import Place
 from geo.serializers import PlaceSerializer
-
-
-def _generate_route_from_input_data(validated_data):
-    for i, waypoint in enumerate(validated_data):
-        yield Waypoint(order=i, **waypoint)
+from .models import Trip, Waypoint
 
 
 class WaypointListSerializer(serializers.ListSerializer):
     def create(self, validated_data):
-        return Waypoint.objects.bulk_create(_generate_route_from_input_data(validated_data))
+        """Bulk-creates several Waypoints from incoming route."""
+        return Waypoint.objects.bulk_create(_generate_waypoints_from_incoming_route(validated_data))
 
-    def update(self, instance, validated_data):
+    def update(self, waypoints_queryset, validated_data):
+        """
+        Manage creations, updates e deletions of several Waypoints,
+        by compare the incoming data with the persisted one.
+        """
+
         fields_to_update = self.child.fields
-        updated_fields = []
+        updated_fields = set()
 
         # Create a list with all the data that's currently in the database
-        instance_route = instance.all()
+        persisted_route = waypoints_queryset.all()
 
-        # Create a list with the validated data passed in the request
-        incoming_route = _generate_route_from_input_data(validated_data)
+        # Create a list of Waypoint instances from incoming validated data
+        incoming_route = _generate_waypoints_from_incoming_route(validated_data)
 
-        # Create a list of tuples to compare incoming data with persisted data padding to the longest with None value
-        comparison_list = list(it.zip_longest(instance_route, incoming_route))
+        # Create a list of tuples, zipping incoming data with persisted one
+        # and filling the gaps with None values
+        comparison_list = list(it.zip_longest(persisted_route, incoming_route))
 
         create_queue = []
         delete_queue = []
@@ -42,8 +43,7 @@ class WaypointListSerializer(serializers.ListSerializer):
                     if old_value != new_value:
                         # Update old values and register the field that has been updated
                         setattr(old_waypoint, field, new_value)
-                        if field not in updated_fields:
-                            updated_fields.append(field)
+                        updated_fields.add(field)
                 update_queue.append(old_waypoint)
             # Queue objects for creation if the incoming data has more waypoints than persisted data
             elif new_waypoint:
@@ -54,9 +54,12 @@ class WaypointListSerializer(serializers.ListSerializer):
 
         # Perform the necessary creations, updates and deletions
         Waypoint.objects.filter(pk__in=delete_queue).delete()
-        Waypoint.objects.bulk_create(create_queue)
+        updated_route = Waypoint.objects.bulk_create(create_queue)
         if updated_fields:
             Waypoint.objects.bulk_update(update_queue, fields=updated_fields)
+            updated_route += update_queue
+
+        return updated_route
 
 
 class WaypointSerializer(serializers.ModelSerializer):
@@ -68,7 +71,7 @@ class WaypointSerializer(serializers.ModelSerializer):
         list_serializer_class = WaypointListSerializer
 
     def to_representation(self, instance):
-        """Overrides Waypoint representation to include flattened Place attributes"""
+        """Overrides Waypoint representation to include flattened Place attributes."""
         representation = super().to_representation(instance)
 
         place_representation = representation.pop('place_id')
@@ -78,6 +81,11 @@ class WaypointSerializer(serializers.ModelSerializer):
         return representation
 
 
+def _generate_waypoints_from_incoming_route(validated_data):
+    for i, waypoint in enumerate(validated_data):
+        yield Waypoint(order=i, **waypoint)
+
+
 class TripSerializer(serializers.ModelSerializer):
     route = WaypointSerializer(many=True, min_length=1)
 
@@ -85,31 +93,38 @@ class TripSerializer(serializers.ModelSerializer):
         model = Trip
         exclude = ["id"]
 
+    @property
+    def waypoint_list_serializer(self):
+        return self.fields["route"]
+
     def create(self, validated_data):
-        route = validated_data.pop("route")
+        """Delegates route creation to specialized nested WaypointListSerializer."""
 
-        trip = super().create(validated_data)
+        incoming_route = validated_data.pop("route")
+        trip = super(TripSerializer, self).create(validated_data)
 
-        waypoint_list_serializer = self.fields["route"]
-
-        # Set up relation between each future new waypoint with newly created trip because
+        # Set up relation between each future new waypoint with newly created trip since
         # 'trip_waypoint.trip_id' can't be null when we create the waypoints.
-        for waypoint in route:
+        for waypoint in incoming_route:
             waypoint["trip_id"] = trip.id
 
         try:
-            trip.route.set(waypoint_list_serializer.create(route))
-        except ValueError as e:
+            created_route = self.waypoint_list_serializer.create(incoming_route)
+        except Exception as e:
             trip.delete()
             raise e
 
+        trip.route.set(created_route)
         return trip
 
-    def update(self, instance, validated_data):
-        waypoint_list_serializer = self.fields["route"]
-        instance_route = instance.route
+    def update(self, trip, validated_data):
+        """Delegates route update to specialized nested WaypointListSerializer."""
+
+        persisted_route = trip.route
         incoming_route = validated_data.pop("route")
+        updated_route = self.waypoint_list_serializer.update(persisted_route, incoming_route)
 
-        waypoint_list_serializer.update(instance_route, incoming_route)
+        trip = super(TripSerializer, self).update(trip, validated_data)
+        trip.route.set(updated_route)
 
-        return super(TripSerializer, self).update(instance, validated_data)
+        return trip
