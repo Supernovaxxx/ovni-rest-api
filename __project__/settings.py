@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'drf_standardized_errors',
 
     'management',
+    'generic',
     'event',
     'agency',
     'trip',
