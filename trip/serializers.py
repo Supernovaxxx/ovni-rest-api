@@ -13,8 +13,8 @@ class WaypointListSerializer(serializers.ListSerializer):
 
     def update(self, waypoints_queryset, validated_data):
         """
-        Manage creations, updates e deletions of several Waypoints,
-        by compare the incoming data with the persisted one.
+        Manages creations, updates and deletions of several Waypoints,
+        by comparing the incoming data with the persisted one.
         """
 
         fields_to_update = self.child.fields
