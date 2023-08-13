@@ -167,16 +167,9 @@ STATICFILES_DIRS = [PROJECT_DIR / "static"]
 
 # Use whitenoise to serve static files
 # See http://whitenoise.evans.io/en/stable/django.html.
-<<<<<<< HEAD
+
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-=======
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-    }
-}
->>>>>>> 1040aca (fix: update storage setting to prevent deprecation)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
