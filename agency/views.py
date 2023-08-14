@@ -20,5 +20,7 @@ class TourViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        agency = get_objects_for_user(user, "change_agency", Agency.objects.all(), accept_global_perms=False)[0]
+        agency = get_objects_for_user(
+            user, "change_agency", Agency.objects.all(), accept_global_perms=False
+        )[0]
         serializer.save(agency=agency)

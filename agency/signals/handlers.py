@@ -18,20 +18,29 @@ def set_permissions(sender, instance, created, **kwargs):
     """
 
     if created:
-        group = Group.objects.create(name=f'{instance.title} Managers')
+        group = Group.objects.create(name=f"{instance.title} Managers")
 
         perms = Permission.objects.filter(
-            Q(codename__contains='agency') |
-            Q(codename__contains='tour')
+            Q(codename__contains="agency") | Q(codename__contains="tour")
         )
 
-        manager_perms = [i for i in perms if i.codename in ['view_agency', 'change_agency',
-                                                            'add_tour', 'view_tour',
-                                                            'change_tour', 'delete_tour']]
+        manager_perms = [
+            i
+            for i in perms
+            if i.codename
+            in [
+                "view_agency",
+                "change_agency",
+                "add_tour",
+                "view_tour",
+                "change_tour",
+                "delete_tour",
+            ]
+        ]
 
         group.permissions.add(*manager_perms)
-        
-        for perm in ['view_agency', 'change_agency']:
+
+        for perm in ["view_agency", "change_agency"]:
             assign_perm(perm, group, instance)
 
 
@@ -44,7 +53,7 @@ def set_permissions(sender, instance, created, **kwargs):
 
     if created:
         groups = get_groups_with_perms(instance.agency)
-        perms = ['view_tour', 'change_tour', 'delete_tour']
+        perms = ["view_tour", "change_tour", "delete_tour"]
 
         groups_and_perms = itertools.product(groups, perms)
 

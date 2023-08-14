@@ -8,9 +8,7 @@ from .utils import get_place_data_from_geocode_api
 class PlaceQuerySet(QuerySet):
     def create_from_maps_api(self, place_id):
         """Creates a Place instance from Google Maps Geocode API data."""
-        return self.create(
-            **get_place_data_from_geocode_api(place_id)
-        )
+        return self.create(**get_place_data_from_geocode_api(place_id))
 
     def get_or_create_from_maps_api(self, place_id):
         """Mimics get_or_create() behavior, but it consumes data from Google Maps Geocode API to perform creation."""
@@ -28,17 +26,19 @@ class PlaceManager(Manager.from_queryset(PlaceQuerySet)):
             .get_queryset()
             .annotate(
                 coordinate=ExpressionWrapper(
-                    Concat('latitude', Value(', '), 'longitude'),
-                    output_field=models.CharField()
+                    Concat("latitude", Value(", "), "longitude"),
+                    output_field=models.CharField(),
                 ),
                 google_maps_url=ExpressionWrapper(
                     Concat(
-                        Value('https://www.google.com/maps/search/'),
-                        Value('?api=1'),
-                        Value('&query='), 'country',
-                        Value('&query_place_id='), 'place_id',
+                        Value("https://www.google.com/maps/search/"),
+                        Value("?api=1"),
+                        Value("&query="),
+                        "country",
+                        Value("&query_place_id="),
+                        "place_id",
                     ),
-                    output_field=models.CharField()
-                )
+                    output_field=models.CharField(),
+                ),
             )
         )

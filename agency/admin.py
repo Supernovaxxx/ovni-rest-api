@@ -16,4 +16,3 @@ class TourAdmin(GuardedModelAdmin):
 
 admin.site.register(Agency, AgencyAdmin)
 admin.site.register(Tour, TourAdmin)
-

@@ -6,7 +6,7 @@ from .models import Agency, Tour
 class AgencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Agency
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TourSerializer(serializers.ModelSerializer):
@@ -14,4 +14,4 @@ class TourSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = '__all__'
+        fields = "__all__"

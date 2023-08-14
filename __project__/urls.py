@@ -22,12 +22,17 @@ from .routers import router
 
 
 urlpatterns = [
-    path('', lambda req: redirect('api/')),
-    path('admin/', admin.site.urls),
-    path('api/', include([
-        path('auth/', include('rest_framework.urls')),
-        path('', include(router.urls)),
-    ]))
+    path("", lambda req: redirect("api/")),
+    path("admin/", admin.site.urls),
+    path(
+        "api/",
+        include(
+            [
+                path("auth/", include("rest_framework.urls")),
+                path("", include(router.urls)),
+            ]
+        ),
+    ),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

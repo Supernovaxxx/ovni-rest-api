@@ -8,7 +8,11 @@ class Place(models.Model):
     city = models.CharField(max_length=50, null=True, blank=True)
     state = models.CharField(max_length=50, null=True, blank=True)
     country = models.CharField(max_length=50, null=True, blank=True)
-    latitude = models.DecimalField(decimal_places=8, max_digits=20, null=True, blank=True)
-    longitude = models.DecimalField(decimal_places=8, max_digits=20, null=True, blank=True)
+    latitude = models.DecimalField(
+        decimal_places=8, max_digits=20, null=True, blank=True
+    )
+    longitude = models.DecimalField(
+        decimal_places=8, max_digits=20, null=True, blank=True
+    )
 
     objects = PlaceManager()

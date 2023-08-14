@@ -9,7 +9,9 @@ from .models import Trip, Waypoint
 class WaypointListSerializer(serializers.ListSerializer):
     def create(self, validated_data):
         """Bulk-creates several Waypoints from incoming route."""
-        return Waypoint.objects.bulk_create(_generate_waypoints_from_incoming_route(validated_data))
+        return Waypoint.objects.bulk_create(
+            _generate_waypoints_from_incoming_route(validated_data)
+        )
 
     def update(self, waypoints_queryset, validated_data):
         """
@@ -63,7 +65,7 @@ class WaypointListSerializer(serializers.ListSerializer):
 
 
 class WaypointSerializer(serializers.ModelSerializer):
-    place_id = PlaceSerializer(source='place')
+    place_id = PlaceSerializer(source="place")
 
     class Meta:
         model = Waypoint
@@ -74,7 +76,7 @@ class WaypointSerializer(serializers.ModelSerializer):
         """Overrides Waypoint representation to include flattened Place attributes."""
         representation = super().to_representation(instance)
 
-        place_representation = representation.pop('place_id')
+        place_representation = representation.pop("place_id")
         for field_name in place_representation:
             representation[field_name] = place_representation[field_name]
 
@@ -122,7 +124,9 @@ class TripSerializer(serializers.ModelSerializer):
 
         persisted_route = trip.route
         incoming_route = validated_data.pop("route")
-        updated_route = self.waypoint_list_serializer.update(persisted_route, incoming_route)
+        updated_route = self.waypoint_list_serializer.update(
+            persisted_route, incoming_route
+        )
 
         trip = super(TripSerializer, self).update(trip, validated_data)
         trip.route.set(updated_route)

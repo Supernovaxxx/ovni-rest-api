@@ -37,4 +37,6 @@ def _get_geocode_data(**params):
     return result[0]
 
 
-GeocodeDataNotFoundError = ValueError('No correspondence found on Google Maps Geocode API')
+GeocodeDataNotFoundError = ValueError(
+    "No correspondence found on Google Maps Geocode API"
+)

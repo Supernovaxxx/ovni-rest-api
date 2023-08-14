@@ -15,4 +15,4 @@ class Tour(models.Model):
     event = models.ForeignKey(Event, models.PROTECT)
 
     class Meta:
-        ordering = ['agency']
+        ordering = ["agency"]
