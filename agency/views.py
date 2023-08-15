@@ -4,7 +4,7 @@ from guardian.shortcuts import get_objects_for_user
 
 from .models import Agency, Tour
 from .serializers import AgencySerializer, TourSerializer
-from management.permissions import IsReadOnly
+from authentication.permissions import IsReadOnly
 
 
 class AgencyViewSet(viewsets.ModelViewSet):

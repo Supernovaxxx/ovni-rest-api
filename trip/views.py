@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 
 from .models import Trip
 from .serializers import TripSerializer
-from management.permissions import IsReadOnly
+from authentication.permissions import IsReadOnly
 
 
 class TripViewSet(viewsets.ModelViewSet):
