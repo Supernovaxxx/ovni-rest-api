@@ -41,7 +41,7 @@
     title: agency 3
 
 # Users:
-- model: management.user
+- model: authentication.user
   pk: 1
   fields:
     password: pbkdf2_sha256$600000$kM8VJVhfx4yd20mLNYZkWa$63EQSRr8C4J9zHJrUVxOjfkXnzmfG9UXWtppYOl6GOM=
@@ -56,7 +56,7 @@
     date_joined: 2022-10-05 16:50:52.408019+00:00
     groups: []
     user_permissions: []
-- model: management.user
+- model: authentication.user
   pk: 2
   fields:
     password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
@@ -72,7 +72,7 @@
     groups:
     - 1
     user_permissions: []
-- model: management.user
+- model: authentication.user
   pk: 3
   fields:
     password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
@@ -88,7 +88,7 @@
     groups:
     - 2
     user_permissions: []
-- model: management.user
+- model: authentication.user
   pk: 4
   fields:
     password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
@@ -104,7 +104,7 @@
     groups:
     - 3
     user_permissions: []
-- model: management.user
+- model: authentication.user
   pk: 5
   fields:
     password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=

@@ -41,16 +41,19 @@ CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 # Application definition
 
 INSTALLED_APPS = [
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Rest framework apps
     "rest_framework",
-    "guardian",
     "drf_standardized_errors",
-    "management",
+    "guardian",
+    # Project apps
+    "authentication",
     "event",
     "agency",
     "trip",
@@ -102,8 +105,15 @@ DATABASES = {
 FIXTURE_DIRS = [PROJECT_DIR / "fixtures"]
 
 
-# Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
+# Authentication
+# https://docs.djangoproject.com/en/4.2/topics/auth/default/
+
+AUTH_USER_MODEL = "authentication.User"
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "guardian.backends.ObjectPermissionBackend",
+)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -156,6 +166,8 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# Rest framework
+# https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoObjectPermissions"
@@ -167,12 +179,3 @@ REST_FRAMEWORK = {
 
 
 DRF_STANDARDIZED_ERRORS = {"ENABLE_IN_DEBUG_FOR_UNHANDLED_EXCEPTIONS": True}
-
-
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "guardian.backends.ObjectPermissionBackend",
-)
-
-
-AUTH_USER_MODEL = "management.User"
