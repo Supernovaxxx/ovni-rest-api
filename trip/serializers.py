@@ -93,7 +93,7 @@ class TripSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trip
-        exclude = ["id"]
+        fields = "__all__"
 
     @property
     def waypoint_list_serializer(self):
@@ -122,13 +122,14 @@ class TripSerializer(serializers.ModelSerializer):
     def update(self, trip, validated_data):
         """Delegates route update to specialized nested WaypointListSerializer."""
 
-        persisted_route = trip.route
-        incoming_route = validated_data.pop("route")
-        updated_route = self.waypoint_list_serializer.update(
-            persisted_route, incoming_route
-        )
-
+        incoming_route = validated_data.pop("route", None)
         trip = super(TripSerializer, self).update(trip, validated_data)
-        trip.route.set(updated_route)
+
+        if incoming_route:
+            persisted_route = trip.route
+            updated_route = self.waypoint_list_serializer.update(
+                persisted_route, incoming_route
+            )
+            trip.route.set(updated_route)
 
         return trip
