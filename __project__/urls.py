@@ -24,11 +24,13 @@ from .routers import router
 urlpatterns = [
     path("", lambda req: redirect("api/")),
     path("admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")),
     path(
         "api/",
         include(
             [
-                path("auth/", include("rest_framework.urls")),
+                path("auth/", include("authentication.urls")),
+                path("rest/", include("rest_framework.urls")),
                 path("", include(router.urls)),
             ]
         ),

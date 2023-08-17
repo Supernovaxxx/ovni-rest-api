@@ -50,6 +50,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Rest framework apps
     "rest_framework",
+    "rest_framework.authtoken",
+    "allauth",
+    "allauth.account",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     "drf_standardized_errors",
     "guardian",
     # Project apps
@@ -130,6 +135,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+SITE_ID = 1
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -164,6 +173,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Rest framework
 # https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoObjectPermissions"
     ],
