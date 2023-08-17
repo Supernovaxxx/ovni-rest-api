@@ -7,6 +7,7 @@
 Django~=4.0
 django-environ~=0.9
 djangorestframework~=3.14
+dj-rest-auth[with_social]~=4.0
 django-guardian~=2.4
 drf_standardized_errors~=0.12
 googlemaps~=4.10
