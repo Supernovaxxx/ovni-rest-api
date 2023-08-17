@@ -2,7 +2,7 @@ from .google_maps import GOOGLE_MAPS_API_CLIENT
 
 
 def get_place_data_from_geocode_api(place_id):
-    geocode_data = _get_geocode_data(place_id=place_id)
+    geocode_data = GOOGLE_MAPS_API_CLIENT.geocode(place_id=place_id)
 
     ret = {
         "place_id": place_id,
@@ -22,21 +22,3 @@ def get_place_data_from_geocode_api(place_id):
             ret["country"] = item["short_name"]
 
     return ret
-
-
-def _get_geocode_data(**params):
-    """Interface with Google Maps Geocode API"""
-    try:
-        result = GOOGLE_MAPS_API_CLIENT.geocode(**params)
-    except Exception as e:
-        raise GeocodeDataNotFoundError
-
-    if not result:
-        raise GeocodeDataNotFoundError
-
-    return result[0]
-
-
-GeocodeDataNotFoundError = ValueError(
-    "No correspondence found on Google Maps Geocode API"
-)
