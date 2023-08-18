@@ -19,4 +19,8 @@ class Event(models.Model):
                 check=Q(end_date__gt=F("start_date")),
                 name="end_date_gt_start_date",
             ),
+            models.CheckConstraint(
+                check=Q(subtitle__length__gt=3),
+                name="subtitle_min_length",
+            ),
         ]

@@ -7,24 +7,24 @@
 - model: event.event
   pk: 1
   fields:
-    title: '1'
-    subtitle: '1'
+    title: 'Samsara'
+    subtitle: 'Leave Experience'
     start_date: 2023-07-10 12:03:31+00:00
     end_date: 2023-07-10 12:03:32+00:00
 - model: event.event
   pk: 2
   fields:
-    title: '2'
-    subtitle: '2'
+    title: 'Bug Open Air'
+    subtitle: 'João Pessoa'
     start_date: 2023-07-10 12:04:57+00:00
     end_date: 2023-07-10 12:04:58+00:00
 - model: event.event
   pk: 3
   fields:
-    title: '3'
-    subtitle: '3'
-    start_date: 2023-07-10 12:05:06+00:00
-    end_date: 2023-07-10 12:05:07+00:00
+    title: 'Liquid Sky'
+    subtitle: 'Revolution'
+    start_date: 2023-10-07 22:00:00-03:00
+    end_date: 2023-10-08 18:00:00-03:00
 
 # Agencies:
 - model: agency.agency
