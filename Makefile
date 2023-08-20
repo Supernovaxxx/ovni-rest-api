@@ -73,6 +73,10 @@ run:: ## Launch application locally
 		--config python:$(GUNICORN_SETTINGS_MODULE) \
 		$(DJANGO_WSGI_MODULE)
 
+test:: ## Perform unit tests routine
+	-rm -fr .pytest_cache/
+	-pytest
+
 finish:: ## Stop application execution
 	-test -r $(PID_FILE) && pkill --echo --pidfile $(PID_FILE)
 
@@ -91,4 +95,4 @@ veryclean:: clean ## Delete all generated files
 
 .EXPORT_ALL_VARIABLES:
 .ONESHELL:
-.PHONY: help prepare init execute setup compile run finish clean veryclean
+.PHONY: help prepare init execute setup compile run test finish clean veryclean
