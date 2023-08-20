@@ -1,3 +1,4 @@
+from django.core.validators import MinLengthValidator
 from django.db import models
 from django.db.models import Q, F
 
@@ -5,8 +6,8 @@ from .managers import EventManager
 
 
 class Event(models.Model):
-    title = models.TextField()
-    subtitle = models.TextField()
+    title = models.TextField(validators=[MinLengthValidator(3)])
+    subtitle = models.TextField(validators=[MinLengthValidator(3)])
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
