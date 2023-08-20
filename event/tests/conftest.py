@@ -1,17 +1,16 @@
 import pytest
-from rest_framework.test import APIClient
-from .factories import EventFactory
+import random
 
 
 @pytest.fixture()
-def unauthenticated_api_client() -> APIClient:
-    """
-    Fixture to provide an API client
-    :return: APIClient
-    """
-    yield APIClient()
+@pytest.mark.django_db
+def populate_db_with_events(event_factory, inactive_event_factory):
+    def _populate(nb_active=5, nb_inactive=5, nb_events=None):
+        if nb_events and type(nb_events) == int and nb_events <= 50:
+            nb_active = random.randrange(1, nb_events)
+            nb_inactive = nb_events - nb_active
 
+        return (event_factory.create_batch(nb_active),
+                inactive_event_factory.create_batch(nb_inactive))
 
-@pytest.fixture
-def create_three_active_events(scope="module"):
-    return EventFactory(), EventFactory(), EventFactory()
+    return _populate
