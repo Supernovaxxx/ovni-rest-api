@@ -13,6 +13,14 @@ fake = Faker()
 @pytest.mark.django_db
 class TestEventListView:
     def test_list_successful_read(self, client, populate_db_with_events):
+        """
+        Test the successful retrieval of a list of events.
+
+        This test populates the database with a specified number of events,
+        sends a GET request to the events list endpoint, and asserts that the response status code
+        is 200 (OK) and that the count of events in the response matches the expected number of events.
+        """
+
         nb_events = 5
         populate_db_with_events(nb_events=nb_events)
         list_url = reverse("events-list")
@@ -22,7 +30,13 @@ class TestEventListView:
         assert list_response.json()["count"] == nb_events
 
     def test_create_event_as_admin(self, admin_client):
-        """Test that an admin or staff user can create an event."""
+        """
+        Test that an admin or staff user can create an event.
+
+        This test simulates the creation of a new event by sending a POST request to the events list
+        endpoint with appropriate data. It asserts that the response status code is 201 (Created)
+        to confirm successful event creation.
+        """
 
         # Create a new event (POST request)
         create_data = {
@@ -37,7 +51,15 @@ class TestEventListView:
         assert create_response.status_code == status.HTTP_201_CREATED
 
     def test_create_event_as_unauthorized_user(self, client):
-        """Test that an unauthorized user cannot create an event."""
+        """
+        Test that an unauthorized user cannot create an event.
+
+        This test simulates an unauthorized user's attempt to create a new event
+        by sending a POST request to the events list endpoint with appropriate data
+        It asserts that the response status code is 403 (Forbidden) to confirm that
+        unauthorized users are not allowed to create events.
+        """
+
         # Attempt to create an event as an unauthorized user (POST request)
         create_url = reverse("events-list")
         create_data = {
@@ -54,18 +76,22 @@ class TestEventListView:
 @pytest.mark.django_db
 class TestEventDetailView:
     """
-        Test cases for the Event detail view, covering various scenarios.
+    Test cases for the Event detail view, covering various scenarios.
 
-        These test cases ensure that an unauthenticated user can read the details
-        of an event, unauthorized access attempts are handled correctly, and that
-        non-existent events return the expected 404 response.
-
-        Attributes:
-            client (DjangoTestClient): A Django test client for making HTTP requests.
-            populated_db_with_events (fixture): A fixture for populating the database
-                with event data.
-        """
+    These test cases ensure that an unauthenticated user can read the details
+    of an event, unauthorized access attempts are handled correctly, and that
+    non-existent events return the expected 404 response.
+    """
     def test_successful_read(self, client, populate_db_with_events):
+        """
+        Test the successful retrieval of event details.
+
+        This test populates the database with a specified number of events, retrieves
+        the details of the last event using a GET request to the events detail endpoint,
+        and asserts that the response status code is 200 (OK) and that the event's ID in
+        the response matches the expected event's ID.
+        """
+
         populate_db_with_events(nb_events=5)
         event = Event.objects.last()
         url = reverse("events-detail", kwargs={"pk": event.pk})
@@ -75,6 +101,15 @@ class TestEventDetailView:
         assert get_response.data["id"] == event.pk
 
     def test_non_existent_event(self, client):
+        """
+        Test handling of a request for a non-existent event.
+
+        This test sends a GET request to the events detail endpoint with a primary key
+        that is assumed to not exist in the database. It asserts that the response
+        status code is 404 (Not Found) to confirm that non-existent events are handled
+        correctly.
+        """
+
         non_existent_pk = 9999  # Assuming this primary key does not exist
         url = reverse("events-detail", kwargs={"pk": non_existent_pk})
 
@@ -84,7 +119,12 @@ class TestEventDetailView:
     def test_update_event_as_admin(self, admin_client, populate_db_with_events):
         """
         Test that an admin or staff user can update an event.
+
+        This test creates events in the database, retrieves the last event, and then attempts
+        to update it using both PUT and PATCH requests. It verifies that the responses have
+        the correct status codes (200 OK) and that the updated data matches the input data.
         """
+
         # Create events
         populate_db_with_events(nb_events=5)
         event = Event.objects.last()
@@ -126,7 +166,12 @@ class TestEventDetailView:
     def test_update_event_as_unauthorized_user(self, client, populate_db_with_events):
         """
         Test that an unauthorized user cannot update an event.
+
+        This test creates events in the database, retrieves the last event, and then attempts
+        to update it as an unauthorized user using a PUT request. It verifies that the response
+        status code is 403 (Forbidden) to confirm that unauthorized users cannot update events.
         """
+
         # Create events
         populate_db_with_events(nb_events=5)
         event = Event.objects.last()
@@ -146,7 +191,12 @@ class TestEventDetailView:
     def test_delete_event_as_admin(self, admin_client, populate_db_with_events):
         """
         Test that an admin or staff user can delete an event.
+
+        This test creates events in the database, retrieves the last event, and then attempts
+        to delete it using a DELETE request. It verifies that the response status code is
+        204 (No Content) to confirm successful event deletion.
         """
+
         # Create events
         populate_db_with_events(nb_events=5)
         event = Event.objects.last()
@@ -160,7 +210,12 @@ class TestEventDetailView:
     def test_delete_event_as_unauthorized_user(self, client, populate_db_with_events):
         """
         Test that an unauthorized user cannot delete an event.
+
+        This test creates events in the database, retrieves the last event, and then attempts
+        to delete it as an unauthorized user using a DELETE request. It verifies that the response
+        status code is 403 (Forbidden) to confirm that unauthorized users cannot delete events.
         """
+
         # Create events
         populate_db_with_events(nb_events=5)
         event = Event.objects.last()
