@@ -58,9 +58,9 @@ def test_event_active_manager_method(
     populate_db_with_events(nb_active=nb_active, nb_inactive=nb_inactive)
 
     filtered_active_events = Event.objects.active()
-    assert 3 == filtered_active_events.count()
+    assert nb_active == filtered_active_events.count()
 
     event_factory()
     inactive_event_factory()
     filtered_active_events = Event.objects.active()
-    assert 4 == filtered_active_events.count()
+    assert nb_active + 1 == filtered_active_events.count()
