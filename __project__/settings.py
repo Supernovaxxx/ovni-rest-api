@@ -168,7 +168,11 @@ STATICFILES_DIRS = [PROJECT_DIR / "static"]
 # Use whitenoise to serve static files
 # See http://whitenoise.evans.io/en/stable/django.html.
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    }
+}
 
 
 # Default primary key field type
