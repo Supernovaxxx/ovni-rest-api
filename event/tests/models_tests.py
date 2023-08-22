@@ -48,14 +48,14 @@ def test_event_creation(title, subtitle, start_date, end_date, validity):
 
 @pytest.mark.django_db
 def test_event_active_manager_method(
-    populated_db_with_events, event_factory, inactive_event_factory
+    populate_db_with_events, event_factory, inactive_event_factory
 ):
     """The active() Event queryset method should only return active events."""
 
     nb_active = 3
     nb_inactive = 7
 
-    populated_db_with_events(nb_active=nb_active, nb_inactive=nb_inactive)
+    populate_db_with_events(nb_active=nb_active, nb_inactive=nb_inactive)
 
     filtered_active_events = Event.objects.active()
     assert 3 == filtered_active_events.count()
