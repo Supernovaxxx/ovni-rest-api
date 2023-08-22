@@ -112,6 +112,17 @@ class TestEventDetailView:
         assert parsed_start_date == update_data["start_date"]
         assert parsed_end_date == update_data["end_date"]
 
+        # Update the event (PATCH request)
+        patch_data = {
+            "title": fake.sentence(nb_words=2),
+            "subtitle": fake.sentence(nb_words=5)
+        }
+        patch_response = admin_client.patch(update_url, data=patch_data, content_type='application/json')
+
+        assert patch_response.status_code == status.HTTP_200_OK
+        assert patch_response.data["title"] == patch_data["title"]
+        assert patch_response.data["subtitle"] == patch_data["subtitle"]
+
     def test_update_event_as_unauthorized_user(self, client, populate_db_with_events):
         """
         Test that an unauthorized user cannot update an event.
