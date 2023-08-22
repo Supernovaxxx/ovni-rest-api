@@ -31,8 +31,12 @@ fake = Faker()
 @pytest.mark.django_db
 def test_event_creation(title, subtitle, start_date, end_date, validity):
     """
-    - Event's shouldn't be allowed to be created with an end_date in the past of start_date.
-    - All fields must be filled with valid data.
+        Test event creation and validation with different input scenarios.
+
+        This test method uses pytest's parameterization feature to run multiple test cases
+        with various combinations of input data for creating an event. It verifies that
+        the EventSerializer correctly validates the input data based on the provided
+        'validity' parameter.
     """
 
     data = {
@@ -50,7 +54,13 @@ def test_event_creation(title, subtitle, start_date, end_date, validity):
 def test_event_active_manager_method(
     populate_db_with_events, event_factory, inactive_event_factory
 ):
-    """The active() Event queryset method should only return active events."""
+    """
+        Test the 'active' manager method of the Event model.
+
+        This test method populates the database with a specified number of active and
+        inactive events using fixtures, and then checks if the 'active' manager method
+        correctly filters and counts the active events.
+    """
 
     nb_active = 3
     nb_inactive = 7
