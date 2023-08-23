@@ -7,7 +7,7 @@ from .managers import EventManager
 
 class Event(models.Model):
     title = models.TextField(validators=[MinLengthValidator(3)])
-    subtitle = models.TextField(validators=[MinLengthValidator(3)])
+    subtitle = models.TextField()
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
