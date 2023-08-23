@@ -1,35 +1,19 @@
 import pytest
+
 from faker import Faker
+from pytest_cases import parametrize_with_cases
 
 from event.serializers import EventSerializer
 from event.models import Event
 
-
-PAST_DATE = "2023-08-18T12:00:00.013Z"
-FUTURE_DATE = "2024-08-18T12:00:00.013Z"
+from .test_models_cases import EventData
 
 fake = Faker()
 
 
-@pytest.mark.parametrize(
-    "title, subtitle, start_date, end_date, validity",
-    [
-        ("Title", "Subtitle", PAST_DATE, FUTURE_DATE, True),  # valid input
-        ("Title", "Subtitle", FUTURE_DATE, PAST_DATE, False),  # invalid dates
-        # blank values
-        ("", "Subtitle", PAST_DATE, FUTURE_DATE, False),
-        ("Title", "", PAST_DATE, FUTURE_DATE, False),
-        ("Title", "Subtitle", "", FUTURE_DATE, False),
-        ("Title", "Subtitle", PAST_DATE, "", False),
-        # null values
-        (None, "Subtitle", PAST_DATE, FUTURE_DATE, False),
-        ("Title", None, PAST_DATE, FUTURE_DATE, False),
-        ("Title", "Subtitle", None, FUTURE_DATE, False),
-        ("Title", "Subtitle", PAST_DATE, None, False),
-    ],
-)
+@parametrize_with_cases("data", cases=EventData)
 @pytest.mark.django_db
-def test_event_creation(title, subtitle, start_date, end_date, validity):
+def test_event_creation(data):
     """
         Test event creation and validation with different input scenarios.
 
@@ -39,12 +23,7 @@ def test_event_creation(title, subtitle, start_date, end_date, validity):
         'validity' parameter.
     """
 
-    data = {
-        "title": title,
-        "subtitle": subtitle,
-        "start_date": start_date,
-        "end_date": end_date,
-    }
+    validity = data.pop("validity")
     serializer = EventSerializer(data=data)
 
     return serializer.is_valid() is validity
