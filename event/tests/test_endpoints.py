@@ -1,11 +1,13 @@
 import pytest
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.urls import reverse
+from pytest_cases import parametrize_with_cases
 from rest_framework import status
 from faker import Faker
 
 from event.models import Event
+from .test_models_cases import EventData
 
 fake = Faker()
 
@@ -29,7 +31,8 @@ class TestEventListView:
         assert list_response.status_code == status.HTTP_200_OK
         assert list_response.json()["count"] == nb_events
 
-    def test_create_event_as_admin(self, admin_client):
+    @parametrize_with_cases("valid_data", cases=EventData, has_tag='valid_data')
+    def test_create_event_as_admin(self, admin_client, valid_data):
         """
         Test that an admin or staff user can create an event.
 
@@ -39,18 +42,14 @@ class TestEventListView:
         """
 
         # Create a new event (POST request)
-        create_data = {
-            "title": "title",
-            "subtitle": "subtitle",
-            "start_date": fake.past_datetime(),
-            "end_date": fake.future_datetime()
-        }
+        create_data = valid_data
         create_url = reverse("events-list")
         create_response = admin_client.post(create_url, create_data)
 
         assert create_response.status_code == status.HTTP_201_CREATED
 
-    def test_create_event_as_unauthorized_user(self, client):
+    @parametrize_with_cases("valid_data", cases=EventData, has_tag='valid_data')
+    def test_create_event_as_unauthorized_user(self, client, valid_data):
         """
         Test that an unauthorized user cannot create an event.
 
@@ -62,12 +61,7 @@ class TestEventListView:
 
         # Attempt to create an event as an unauthorized user (POST request)
         create_url = reverse("events-list")
-        create_data = {
-            "title": "title",
-            "subtitle": "subtitle",
-            "start_date": fake.past_datetime(),
-            "end_date": fake.future_datetime()
-        }
+        create_data = valid_data
         create_response = client.post(create_url, create_data)
 
         assert create_response.status_code == status.HTTP_403_FORBIDDEN
@@ -116,7 +110,8 @@ class TestEventDetailView:
         non_existent_response = client.get(url)
         assert non_existent_response.status_code == status.HTTP_404_NOT_FOUND
 
-    def test_update_event_as_admin(self, admin_client, populate_db_with_events):
+    @parametrize_with_cases("valid_data", cases=EventData, has_tag='valid_data')
+    def test_update_event_as_admin(self, admin_client, populate_db_with_events, valid_data):
         """
         Test that an admin or staff user can update an event.
 
@@ -131,13 +126,7 @@ class TestEventDetailView:
 
         # Update the event (PUT request)
         update_url = reverse("events-detail", kwargs={"pk": event.pk})
-        update_data = {
-            "title": fake.sentence(nb_words=2),
-            "subtitle": fake.sentence(nb_words=5),
-            "start_date": fake.past_datetime(),
-            "end_date": fake.future_datetime()
-        }
-        date_format = "%Y-%m-%dT%H:%M:%SZ"
+        update_data = valid_data
         update_response = admin_client.put(update_url, data=update_data, content_type='application/json')
 
         assert update_response.status_code == status.HTTP_200_OK
@@ -145,8 +134,8 @@ class TestEventDetailView:
         assert update_response.data["subtitle"] == update_data["subtitle"]
 
         # Parse the date strings from the response
-        parsed_start_date = datetime.strptime(update_response.data["start_date"], date_format)
-        parsed_end_date = datetime.strptime(update_response.data["end_date"], date_format)
+        parsed_start_date = datetime.fromisoformat(update_response.data["start_date"]).replace(tzinfo=timezone.utc)
+        parsed_end_date = datetime.fromisoformat(update_response.data["end_date"]).replace(tzinfo=timezone.utc)
 
         # Compare parsed dates with the original data
         assert parsed_start_date == update_data["start_date"]
@@ -163,7 +152,8 @@ class TestEventDetailView:
         assert patch_response.data["title"] == patch_data["title"]
         assert patch_response.data["subtitle"] == patch_data["subtitle"]
 
-    def test_update_event_as_unauthorized_user(self, client, populate_db_with_events):
+    @parametrize_with_cases("valid_data", cases=EventData, has_tag='valid_data')
+    def test_update_event_as_unauthorized_user(self, client, populate_db_with_events, valid_data):
         """
         Test that an unauthorized user cannot update an event.
 
@@ -178,12 +168,7 @@ class TestEventDetailView:
 
         # Attempt to update the event as an unauthorized user (PUT request)
         update_url = reverse("events-detail", kwargs={"pk": event.pk})
-        update_data = {
-            "title": fake.words(nb=2),
-            "subtitle": fake.words(nb=5),
-            "start_date": fake.past_datetime(),
-            "end_date": fake.future_datetime()
-        }
+        update_data = valid_data
         update_response = client.put(update_url, update_data)
 
         assert update_response.status_code == status.HTTP_403_FORBIDDEN
