@@ -6,12 +6,16 @@
 
 Django~=4.0
 django-environ~=0.9
-djangorestframework~=3.14
-dj-rest-auth[with_social]~=4.0
 django-guardian~=2.4
+
+djangorestframework~=3.14
+djangorestframework-simplejwt~=5.2
+dj-rest-auth[with_social]~=4.0
 drf_standardized_errors~=0.12
 googlemaps~=4.10
+
 whitenoise~=6.2
 gunicorn~=21.1
+
 PyYAML~=6.0
 requests~=2.31
