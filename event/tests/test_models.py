@@ -15,12 +15,12 @@ fake = Faker()
 @pytest.mark.django_db
 def test_event_creation(data):
     """
-        Test event creation and validation with different input scenarios.
+    Test event creation and validation with different input scenarios.
 
-        This test method uses pytest's parameterization feature to run multiple test cases
-        with various combinations of input data for creating an event. It verifies that
-        the EventSerializer correctly validates the input data based on the provided
-        'validity' parameter.
+    This test method uses pytest's parameterization feature to run multiple test cases
+    with various combinations of input data for creating an event. It verifies that
+    the EventSerializer correctly validates the input data based on the provided
+    'validity' parameter.
     """
 
     validity = data.pop("validity")
@@ -30,15 +30,13 @@ def test_event_creation(data):
 
 
 @pytest.mark.django_db
-def test_event_active_manager_method(
-    populate_db_with_events, event_factory, inactive_event_factory
-):
+def test_event_active_manager_method(event_factory):
     """
-        Test the 'active' manager method of the Event model.
+    Test the 'active' manager method of the Event model.
 
-        This test method populates the database with a specified number of active and
-        inactive events using fixtures, and then checks if the 'active' manager method
-        correctly filters and counts the active events.
+    This test method populates the database with a specified number of active and
+    inactive events using fixtures, and then checks if the 'active' manager method
+    correctly filters and counts the active events.
     """
 
     nb_active = 3
