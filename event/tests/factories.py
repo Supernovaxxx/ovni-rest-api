@@ -1,39 +1,30 @@
-import datetime as dt
+import random
+from datetime import timedelta, UTC
 import factory
 
-from faker import Faker
+from factory import Faker
+
+from faker_optional import OptionalProvider
 
 from event.models import Event
 
-fake = Faker()
 
-
-def random_title():
-    return fake.sentence(nb_words=2, variable_nb_words=True)
-
-
-def random_subtitle():
-    return fake.sentence(nb_words=5, variable_nb_words=True)
-
-
-def random_past_date():
-    return fake.past_datetime(tzinfo=dt.UTC)
-
-
-def random_future_date():
-    return fake.future_datetime(tzinfo=dt.UTC)
+Faker.add_provider(OptionalProvider)
 
 
 class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Event
 
-    title = random_title()
-    subtitle = random_subtitle()
-    start_date = random_past_date()
-    end_date = random_future_date()
+    title = Faker("bs")
+    subtitle = Faker("optional_str", ratio=0.25)
+    start_date = Faker("past_datetime", tzinfo=UTC)
+    end_date = factory.LazyAttribute(
+        lambda o: o.start_date + timedelta(days=random.randint(1, 7))
+    )
 
-
-class InactiveEventFactory(EventFactory):
-    start_date = random_past_date()
-    end_date = start_date + dt.timedelta(minutes=1)
+    class Params:
+        upcoming = factory.Trait(start_date=Faker("future_datetime", tzinfo=UTC))
+        past = factory.Trait(end_date=factory.LazyAttribute(
+           lambda o: o.start_date + timedelta(seconds=1))
+        )

@@ -40,14 +40,16 @@ def test_event_active_manager_method(event_factory):
     """
 
     nb_active = 3
-    nb_inactive = 7
+    nb_past = 7
 
-    populate_db_with_events(nb_active=nb_active, nb_inactive=nb_inactive)
+    event_factory.create_batch(size=nb_active, upcoming=True)
+    event_factory.create_batch(size=nb_past, past=True)
 
     filtered_active_events = Event.objects.active()
     assert nb_active == filtered_active_events.count()
 
-    event_factory()
-    inactive_event_factory()
+    event_factory.create_batch(size=nb_active, upcoming=True)
+    event_factory.create_batch(size=nb_past, past=True)
+
     filtered_active_events = Event.objects.active()
-    assert nb_active + 1 == filtered_active_events.count()
+    assert nb_active + nb_active == filtered_active_events.count()
