@@ -11,9 +11,16 @@ class EventManager(Manager):
                 is_active=ExpressionWrapper(
                     Q(end_date__gte=Now()),
                     output_field=BooleanField(),
-                )
+                ),
+                is_upcoming=ExpressionWrapper(
+                    Q(start_date__gt=Now()),
+                    output_field=BooleanField(),
+                ),
             )
         )
 
     def active(self):
         return self.filter(is_active=True)
+
+    def upcoming(self):
+        return self.filter(is_upcoming=True)
