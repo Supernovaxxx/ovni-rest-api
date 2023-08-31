@@ -87,7 +87,7 @@ class TestEventDetailView:
         the response matches the expected event's ID.
         """
 
-        populate_db_with_events(nb_events=5)
+        populate_db_with_events()
         event = Event.objects.last()
         url = reverse("events-detail", kwargs={"pk": event.pk})
 
@@ -124,7 +124,7 @@ class TestEventDetailView:
         """
 
         # Create events
-        populate_db_with_events(nb_events=5)
+        populate_db_with_events()
         event = Event.objects.last()
 
         # Update the event (PUT request)
@@ -176,7 +176,7 @@ class TestEventDetailView:
         """
 
         # Create events
-        populate_db_with_events(nb_events=5)
+        populate_db_with_events()
         event = Event.objects.last()
 
         # Attempt to update the event as an unauthorized user (PUT request)
@@ -196,7 +196,7 @@ class TestEventDetailView:
         """
 
         # Create events
-        populate_db_with_events(nb_events=5)
+        populate_db_with_events()
         event = Event.objects.last()
 
         # Delete the event (DELETE request)
@@ -215,7 +215,7 @@ class TestEventDetailView:
         """
 
         # Create events
-        populate_db_with_events(nb_events=5)
+        populate_db_with_events()
         event = Event.objects.last()
 
         # Attempt to delete the event as an unauthorized user (DELETE request)
