@@ -1,4 +1,4 @@
-from random import randrange, choice
+from random import choice
 from django.core.management.base import BaseCommand
 from event.tests.factories import EventFactory
 
@@ -20,9 +20,26 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, parser):
-        parser.add_argument("quantity", type=int, nargs="?")
-        parser.add_argument("-u", "--upcoming", type=int, default=0)
-        parser.add_argument("-p", "--past", type=int, default=0)
+        parser.add_argument(
+            "quantity",
+            type=int,
+            nargs="?",
+            help="The quantity of events to create. If not provided, it will use the default quantity.",
+        )
+        parser.add_argument(
+            "-u",
+            "--upcoming",
+            type=int,
+            default=0,
+            help="The quantity of upcoming events to create.",
+        )
+        parser.add_argument(
+            "-p",
+            "--past",
+            type=int,
+            default=0,
+            help="The quantity of past events to create.",
+        )
 
     def handle(self, *args, quantity=None, upcoming=None, past=None, **options):
         # Check if a custom quantity is provided as a command-line argument
@@ -75,7 +92,7 @@ class Command(BaseCommand):
 
         # Create events based on the calculated 'upcoming' and 'past' quantities
         EventFactory.create_batch(size=upcoming, upcoming=True)
-        EventFactory.create_batch(size=past)
+        EventFactory.create_batch(size=past, past=True)
 
         # Display a success message with the event counts
         self.stdout.write(
