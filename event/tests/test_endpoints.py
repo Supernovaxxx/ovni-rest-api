@@ -1,15 +1,15 @@
 import pytest
+import factory
+
 from datetime import datetime, timezone
 
 from django.urls import reverse
 from pytest_cases import parametrize_with_cases
 from rest_framework import status
-from faker import Faker
 
 from event.models import Event
+from .factories import EventFactory
 from .test_models_cases import EventData
-
-fake = Faker()
 
 
 @pytest.mark.django_db
@@ -40,11 +40,11 @@ class TestEventListView:
         endpoint with appropriate data. It asserts that the response status code is 201 (Created)
         to confirm successful event creation.
         """
-
+        if valid_data["subtitle"] is None:
+            valid_data["subtitle"] = ""
         # Create a new event (POST request)
-        create_data = valid_data
         create_url = reverse("events-list")
-        create_response = admin_client.post(create_url, create_data)
+        create_response = admin_client.post(create_url, valid_data)
 
         assert create_response.status_code == status.HTTP_201_CREATED
 
@@ -59,10 +59,11 @@ class TestEventListView:
         unauthorized users are not allowed to create events.
         """
 
+        if valid_data["subtitle"] is None:
+            valid_data["subtitle"] = ""
         # Attempt to create an event as an unauthorized user (POST request)
         create_url = reverse("events-list")
-        create_data = valid_data
-        create_response = client.post(create_url, create_data)
+        create_response = client.post(create_url, valid_data)
 
         assert create_response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -129,14 +130,13 @@ class TestEventDetailView:
 
         # Update the event (PUT request)
         update_url = reverse("events-detail", kwargs={"pk": event.pk})
-        update_data = valid_data
         update_response = admin_client.put(
-            update_url, data=update_data, content_type="application/json"
+            update_url, data=valid_data, content_type="application/json"
         )
 
         assert update_response.status_code == status.HTTP_200_OK
-        assert update_response.data["title"] == update_data["title"]
-        assert update_response.data["subtitle"] == update_data["subtitle"]
+        assert update_response.data["title"] == valid_data["title"]
+        assert update_response.data["subtitle"] == valid_data["subtitle"]
 
         # Parse the date strings from the response
         parsed_start_date = datetime.fromisoformat(
@@ -147,14 +147,12 @@ class TestEventDetailView:
         ).replace(tzinfo=timezone.utc)
 
         # Compare parsed dates with the original data
-        assert parsed_start_date == update_data["start_date"]
-        assert parsed_end_date == update_data["end_date"]
+        assert parsed_start_date == valid_data["start_date"]
+        assert parsed_end_date == valid_data["end_date"]
 
         # Update the event (PATCH request)
-        patch_data = {
-            "title": fake.sentence(nb_words=2),
-            "subtitle": fake.sentence(nb_words=5),
-        }
+        new_event_data = factory.build(dict, FACTORY_CLASS=EventFactory)
+        patch_data = {"title": new_event_data.pop("title"), "subtitle": new_event_data.pop("subtitle")}
         patch_response = admin_client.patch(
             update_url, data=patch_data, content_type="application/json"
         )
