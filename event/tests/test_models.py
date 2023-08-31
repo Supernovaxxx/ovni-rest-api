@@ -25,7 +25,7 @@ def test_event_creation(data):
 
 
 @pytest.mark.django_db
-def test_event_upcoming_manager_method(event_factory):
+def test_event_upcoming_manager_method(populate_db_with_events):
     """
     Test the 'active' manager method of the Event model.
 
@@ -37,14 +37,12 @@ def test_event_upcoming_manager_method(event_factory):
     nb_upcoming = 3
     nb_past = 7
 
-    event_factory.create_batch(size=nb_upcoming, upcoming=True)
-    event_factory.create_batch(size=nb_past, past=True)
+    populate_db_with_events(upcoming=nb_upcoming, past=nb_past)
 
     filtered_upcoming_events = Event.objects.upcoming()
     assert nb_upcoming == filtered_upcoming_events.count()
 
-    event_factory.create_batch(size=nb_upcoming, upcoming=True)
-    event_factory.create_batch(size=nb_past, past=True)
+    populate_db_with_events(upcoming=nb_upcoming, past=nb_past)
 
     filtered_upcoming_events = Event.objects.upcoming()
     assert nb_upcoming + nb_upcoming == filtered_upcoming_events.count()
