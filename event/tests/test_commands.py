@@ -19,12 +19,12 @@ def call_command_and_count_events(command_name, *args, **kwargs):
         tuple: A tuple containing the total events added, upcoming events added, and past events added.
 
     """
-    events_count_before_command = Event.objects.count()
+    events_count_before_command = Event.objects.all().count()
     upcoming_events_count_before_command = Event.objects.upcoming().count()
 
     call_command(command_name, *args, **kwargs)
 
-    events_count_after_command = Event.objects.count()
+    events_count_after_command = Event.objects.all().count()
     upcoming_events_count_after_command = Event.objects.upcoming().count()
 
     total_events_added = events_count_after_command - events_count_before_command
