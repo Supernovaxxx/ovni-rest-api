@@ -6,9 +6,6 @@ from compat.faker import Faker
 from event.models import Event
 
 
-Faker.add_provider(OptionalProvider)
-
-
 class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Event
