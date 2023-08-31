@@ -24,7 +24,7 @@ class TestEventListView:
         """
 
         nb_events = 5
-        populate_db_with_events(nb_events=nb_events)
+        populate_db_with_events(nb_events)
         list_url = reverse("events-list")
         list_response = client.get(list_url)
 
