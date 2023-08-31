@@ -1,5 +1,5 @@
 import random
-from datetime import timedelta, UTC
+from datetime import timedelta, UTC, datetime
 import factory
 
 from compat.faker import Faker
@@ -18,7 +18,15 @@ class EventFactory(factory.django.DjangoModelFactory):
     )
 
     class Params:
-        upcoming = factory.Trait(start_date=Faker("future_datetime", tzinfo=UTC))
-        past = factory.Trait(end_date=factory.LazyAttribute(
-           lambda o: o.start_date + timedelta(seconds=1))
+        upcoming = factory.Trait(
+            start_date=Faker("future_datetime", tzinfo=UTC)
+        )
+
+        past = factory.Trait(
+            start_date=datetime.now(tz=UTC) - timedelta(days=random.randint(8, 31))
+        )
+
+        invalid = factory.Trait(
+            end_date=factory.LazyAttribute(
+                lambda o: o.start_date - timedelta(days=1))
         )
