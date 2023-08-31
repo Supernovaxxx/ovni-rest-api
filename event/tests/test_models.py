@@ -1,14 +1,9 @@
 import pytest
-
-from faker import Faker
 from pytest_cases import parametrize_with_cases
 
 from event.serializers import EventSerializer
 from event.models import Event
-
 from .test_models_cases import EventData
-
-fake = Faker()
 
 
 @parametrize_with_cases("data", cases=EventData)
