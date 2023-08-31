@@ -2,10 +2,7 @@ import random
 from datetime import timedelta, UTC
 import factory
 
-from factory import Faker
-
-from faker_optional import OptionalProvider
-
+from compat.faker import Faker
 from event.models import Event
 
 
