@@ -12,7 +12,7 @@ class EventFactory(factory.django.DjangoModelFactory):
 
     title = Faker("bs")
     subtitle = Faker("optional_str", ratio=0.25)
-    start_date = Faker("past_datetime", tzinfo=UTC)
+    start_date = Faker("date_time_this_month", after_now=True, tzinfo=UTC)
     end_date = factory.LazyAttribute(
         lambda o: o.start_date + timedelta(days=random.randint(1, 7))
     )
