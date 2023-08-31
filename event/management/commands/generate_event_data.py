@@ -15,8 +15,16 @@ def _generate_random_number_of_events(quantity=DEFAULT_QUANTITY):
 
 class Command(BaseCommand):
     help = (
-        "Create events with specified quantities of past and upcoming events."
-        f"If quantity is not provided creates {DEFAULT_QUANTITY} events."
+        "Create events with specified quantities of past and upcoming events. "
+        f"If no quantities are specified at all it creates {DEFAULT_QUANTITY} random events; "
+        "If no total quantity is specified but specific quantities are, "
+        "it creates only the specific quantities of events that were provided; "
+        "If only total quantity is specified it creates that quantity of random events; "
+        "If total quantity is specified along with specific quantities there are three cases: "
+        "1) if the sum of specific quantities is equal to total quantity it creates exactly those quantities of events "
+        "2) if the sum of specific quantities is lesser then total quantity "
+        "it will create random extra events to meet that total quantity provided "
+        "3) if the sum of specific quantities is greater then total quantity an error will be raised;"
     )
 
     def add_arguments(self, parser):
@@ -24,7 +32,8 @@ class Command(BaseCommand):
             "quantity",
             type=int,
             nargs="?",
-            help="The quantity of events to create. If not provided, it will use the default quantity.",
+            help=f"The quantity of events to create. "
+                 f"If no arguments are provided, it will use the default quantity: {DEFAULT_QUANTITY}.",
         )
         parser.add_argument(
             "-u",
