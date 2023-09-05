@@ -22,8 +22,8 @@ class Waypoint(models.Model):
     place = models.ForeignKey(Place, models.PROTECT, related_name="waypoints")
     order = models.IntegerField(null=True)
     type = models.CharField(max_length=50, choices=Types.choices)
-    title = models.TextField(max_length=50, null=True, blank=True)
-    detail = models.TextField(max_length=255, null=True, blank=True)
+    title = models.CharField(max_length=50, null=True, blank=True)
+    detail = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         ordering = ["order"]

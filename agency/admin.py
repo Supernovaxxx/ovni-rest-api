@@ -1,18 +1,18 @@
 from django.contrib import admin
 
+# Provides some extra views for object permissions management at admin panel.
 from guardian.admin import GuardedModelAdmin
 
 from .models import Agency, Tour
 
 
-# Provides some extra views for object permissions management at admin panel.
+@admin.register(Tour)
 class AgencyAdmin(GuardedModelAdmin):
-    pass
+    list_display = ["title"]
+    search_fields = ["title"]
 
 
+@admin.register(Agency)
 class TourAdmin(GuardedModelAdmin):
-    pass
-
-
-admin.site.register(Agency, AgencyAdmin)
-admin.site.register(Tour, TourAdmin)
+    list_display = ["id", "agency", "event"]
+    search_fields = ["agency__title", "event__title"]
