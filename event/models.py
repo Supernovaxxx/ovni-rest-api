@@ -21,3 +21,6 @@ class Event(models.Model):
                 name="end_date_gt_start_date",
             ),
         ]
+
+    def __str__(self):
+        return self.title

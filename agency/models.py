@@ -9,6 +9,9 @@ class Agency(models.Model):
     class Meta:
         verbose_name_plural = "agencies"
 
+    def __str__(self):
+        return self.title
+
 
 class Tour(models.Model):
     agency = models.ForeignKey(Agency, models.PROTECT)
@@ -16,3 +19,6 @@ class Tour(models.Model):
 
     class Meta:
         ordering = ["agency"]
+
+    def __str__(self):
+        return f"Tour id: {self.id}"
