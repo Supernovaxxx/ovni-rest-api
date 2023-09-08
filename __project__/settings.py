@@ -38,6 +38,8 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS") if not DEBUG else []
 
 # Application definition
 
@@ -49,16 +51,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "allauth",
+    "allauth.account",
+    "guardian",
+    "corsheaders",
     # Rest framework apps
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
-    "allauth",
-    "allauth.account",
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "drf_standardized_errors",
-    "guardian",
     # Project apps
     "authentication",
     "event",
@@ -69,6 +72,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
