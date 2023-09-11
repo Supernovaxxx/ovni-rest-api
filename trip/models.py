@@ -11,6 +11,9 @@ class Trip(models.Model):
     departure = models.DateTimeField()
     capacity = models.IntegerField()
 
+    def __str__(self):
+        return self.slug
+
 
 class Waypoint(models.Model):
     class Types(models.TextChoices):
@@ -26,7 +29,11 @@ class Waypoint(models.Model):
     detail = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
-        ordering = ["order"]
+        ordering = ["trip", "order"]
         constraints = [
             models.UniqueConstraint(fields=["trip", "order"], name="no duplicate order")
         ]
+
+    def __str__(self):
+        return self.title or self.place
+
