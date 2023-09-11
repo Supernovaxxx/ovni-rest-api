@@ -1,6 +1,4 @@
 from django.db import models
-from django.contrib import admin
-from django.utils.html import format_html
 
 from .managers import PlaceManager
 
@@ -20,9 +18,7 @@ class Place(models.Model):
 
     objects = PlaceManager()
 
-    @admin.display()
-    def google_maps_link(self):
-        return format_html(
-            '<a href="https://www.google.com/maps/place/?q=place_id:{}">GoogleMaps</a>',
-            self.place_id,
-        )
+    def __str__(self):
+        return self.formatted_address
+
+
