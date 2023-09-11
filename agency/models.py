@@ -1,10 +1,13 @@
 from django.db import models
 
 from event.models import Event
+from .managers import AgencyManager
 
 
 class Agency(models.Model):
     title = models.CharField(max_length=50, unique=True)
+
+    objects = AgencyManager()
 
     class Meta:
         verbose_name_plural = "agencies"
