@@ -19,11 +19,12 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import path, include
 from .routers import router
-
+from agency.sites import agency_admin_site
 
 urlpatterns = [
     path("", lambda req: redirect("api/")),
     path("admin/", admin.site.urls),
+    path("agency-admin/", agency_admin_site.urls),
     path("accounts/", include("allauth.urls")),
     path(
         "api/",
