@@ -21,4 +21,4 @@ class Tour(models.Model):
         ordering = ["agency"]
 
     def __str__(self):
-        return f"Tour id: {self.id}"
+        return f"Tour to '{self.event}' owned by '{self.agency}'."
