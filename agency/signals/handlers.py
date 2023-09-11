@@ -21,25 +21,22 @@ def set_permissions(sender, instance, created, **kwargs):
         group = Group.objects.create(name=f"{instance.title} Managers")
 
         perms = Permission.objects.filter(
-            Q(codename__contains="agency") | Q(codename__contains="tour")
-        )
-
-        manager_perms = [
-            i
-            for i in perms
-            if i.codename
-            in [
+            Q(codename__in=[
                 "view_agency",
                 "change_agency",
                 "add_tour",
                 "view_tour",
                 "change_tour",
                 "delete_tour",
-            ]
-        ]
+                "view_event",
+            ])
+        )
 
-        group.permissions.add(*manager_perms)
+        # Assign model level permissions
+        for perm in perms:
+            group.permissions.add(perm.id)
 
+        # Assign object level permissions
         for perm in ["view_agency", "change_agency"]:
             assign_perm(perm, group, instance)
 
