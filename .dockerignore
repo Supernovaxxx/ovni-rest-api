@@ -1,0 +1,23 @@
+# Containerization filter-out patterns
+#
+# This file specifies what to be ignored during execution enviroment definition.
+# See https://docs.docker.com/engine/reference/builder/#dockerignore-file.
+
+
+## Build
+__pycache__/
+*.pyc
+*.log
+*.pot
+
+## Development
+.idea/
+.env
+.pid
+venv/
+static/
+db.sqlite3
+
+.git
+.gitignore
+Dockerfile

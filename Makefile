@@ -34,7 +34,7 @@ DJANGO_ADMIN ?= $(PYTHON) $(MANAGE_PY)
 GUNICORN ?= $(PYTHON) -m gunicorn
 
 # Execution configuration
-VENV_DIR ?= venv
+VENV_DIR ?=
 DJANGO_SETTINGS_MODULE ?= __project__.settings
 DJANGO_WSGI_MODULE ?= __project__.wsgi
 GUNICORN_SETTINGS_MODULE ?= __project__.gunicorn
