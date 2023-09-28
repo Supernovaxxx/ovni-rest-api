@@ -28,7 +28,8 @@ EPHEMERAL_ARCHIVES ?= \
 	db.sqlite3
 
 # Executables definition
-PYTHON ?= $(VENV_DIR)/bin/python3
+PYTHON_VERSION ?= 3.11
+PYTHON ?= $(VENV_DIR)/bin/python$(PYTHON_VERSION)
 PIP ?= $(PYTHON) -m pip
 DJANGO_ADMIN ?= $(PYTHON) $(MANAGE_PY)
 GUNICORN ?= $(PYTHON) -m gunicorn
@@ -50,7 +51,7 @@ help:: ## Show this help
 	egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[37;1m%-20s\033[0m %s\n", $$1, $$2}'
 
 prepare:: ## Inicialize virtual environment
-	test -z $(VENV_DIR) -o -d $(VENV_DIR) || python3 -m venv $(VENV_DIR)
+	test -z $(VENV_DIR) -o -d $(VENV_DIR) || python$(PYTHON_VERSION) -m venv $(VENV_DIR)
 	test -r $(ENV_FILE) -o ! -r $(ENV_FILE).example || cp $(ENV_FILE).example $(ENV_FILE)
 
 init:: veryclean prepare $(REQUIREMENTS_TXT) ## Configure development environment
