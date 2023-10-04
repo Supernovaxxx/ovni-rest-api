@@ -28,3 +28,7 @@ class Tour(models.Model):
 
     def __str__(self):
         return f"Tour to '{self.event}' owned by '{self.agency}'."
+
+    @property
+    def heading(self):
+        return str(self)
