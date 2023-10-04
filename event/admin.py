@@ -30,7 +30,7 @@ class IsUpcomingFilter(admin.SimpleListFilter):
 
 @admin.register(Event, site=agency_admin_site)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ["title", "start_date", "end_date", "is_upcoming", "create_tour"]
+    list_display = ["title", "start_date", "end_date", "is_upcoming", "create_tour_link"]
     list_filter = ["start_date", "end_date", IsUpcomingFilter]
     fields = [("title", "subtitle"), ("start_date", "end_date")]
     search_fields = ["title"]
@@ -39,7 +39,7 @@ class EventAdmin(admin.ModelAdmin):
         return obj.start_date > datetime.now(UTC)
 
     @admin.display()
-    def create_tour(self, obj):
+    def create_tour_link(self, obj):
         url = reverse("agency_admin:agency_tour_add")
         url += f"?event={obj.id}"
         return format_html("<a href='{}'>Create Tour</a>", url)

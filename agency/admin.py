@@ -4,7 +4,8 @@ from django.urls import reverse
 
 # Provides some extra views for object permissions management at admin panel.
 from guardian.admin import GuardedModelAdmin
-from guardian.shortcuts import get_objects_for_user
+
+import nested_admin
 
 from agency.models import Agency, Tour
 from agency.sites import agency_admin_site
@@ -12,13 +13,13 @@ from trip.admin import TripAdminInline
 
 
 @admin.register(Tour, site=agency_admin_site)
-class TourAdmin(GuardedModelAdmin):
-    list_display = ["tour", "event_details"]
+class TourAdmin(GuardedModelAdmin, nested_admin.NestedModelAdmin):
+    list_display = ["tour_heading", "event_details_link"]
     search_fields = ["event__title"]
     inlines = [TripAdminInline]
 
     def get_queryset(self, request):
-        return get_objects_for_user(request.user, "agency.change_tour", accept_global_perms=False)
+        return Tour.objects.get_objects_for_user(request.user)
 
     def get_fields(self, request, obj=None):
         user_agency_count = Agency.objects.get_objects_for_user(request.user).count()
@@ -35,14 +36,14 @@ class TourAdmin(GuardedModelAdmin):
         obj.agency = obj.agency or Agency.objects.get_objects_for_user(request.user).first()
         super().save_model(request, obj, form, change)
 
-    @admin.display()
-    def tour(self, obj):
-        return obj.__str__()
-
-    @admin.display()
-    def event_details(self, obj):
+    @admin.display(description='Event Details')
+    def event_details_link(self, obj):
         url = reverse("agency_admin:event_event_change", args=(obj.event.id,))
         return format_html("<a href='{}'>Event details</a>", url)
+
+    @admin.display(description='Tour Heading')
+    def tour_heading(self, obj):
+        return obj.heading
 
 
 @admin.register(Agency, site=agency_admin_site)
