@@ -1,7 +1,7 @@
 from django.db import models
 
 from event.models import Event
-from .managers import AgencyManager
+from .managers import AgencyManager, TourManager
 
 
 class Agency(models.Model):
@@ -19,6 +19,9 @@ class Agency(models.Model):
 class Tour(models.Model):
     agency = models.ForeignKey(Agency, models.PROTECT)
     event = models.ForeignKey(Event, models.PROTECT)
+
+    objects = TourManager()
+
 
     class Meta:
         ordering = ["agency"]

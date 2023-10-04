@@ -1,16 +1,17 @@
-from django.contrib import admin
+import nested_admin
 
-from guardian.admin import GuardedModelAdmin
 
 from trip.models import Waypoint, Trip
-from agency import sites
+from .forms import WaypointForm
 
 
-class WaypointAdminInline(admin.StackedInline):
+class WaypointAdminInline(nested_admin.NestedStackedInline):
     model = Waypoint
     extra = 0
+    form = WaypointForm
 
 
-class TripAdminInline(admin.StackedInline):
+class TripAdminInline(nested_admin.NestedStackedInline):
     model = Trip
     extra = 0
+    inlines = [WaypointAdminInline]
