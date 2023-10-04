@@ -10,22 +10,25 @@ from event.models import Event
 
 
 class IsUpcomingFilter(admin.SimpleListFilter):
-    title = 'upcoming'
-    parameter_name = 'is_upcoming'
+    title = "upcoming"
+    parameter_name = "is_upcoming"
 
     def lookups(self, request, model_admin):
-        return (
-            ('Yes', 'Yes'),
-            ('No', 'No'),
-        )
+        now = datetime.now(UTC)
+        qs = model_admin.get_queryset(request)
+        if qs.filter(start_date__gt=now).exists():
+            yield "Yes", "Yes"
+        if qs.filter(start_date__lt=now).exists():
+            yield "No", "No"
 
     def queryset(self, request, queryset):
         value = self.value()
-        if value == 'Yes':
-            return queryset.filter(start_date__gt=datetime.now(UTC))
-        elif value == 'No':
-            return queryset.exclude(start_date__gt=datetime.now(UTC))
-        return queryset
+        if value is not None:
+            now = datetime.now(UTC)
+            if value == "Yes":
+                return queryset.filter(start_date__gt=now)
+            elif value == "No":
+                return queryset.filter(start_date__lt=now)
 
 
 @admin.register(Event, site=agency_admin_site)
