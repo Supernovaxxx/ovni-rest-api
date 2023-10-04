@@ -1,11 +1,19 @@
-from django.db.models import QuerySet, Manager
-from guardian.shortcuts import get_objects_for_user
+from django.db.models import Manager
+from compat.guardian import GuardedQuerySet
+from django.db.models import Manager, CharField, F, Value, ExpressionWrapper, Func
 
 
-class AgencyQuerySet(QuerySet):
-    def get_objects_for_user(self, user):
-        return get_objects_for_user(user, "agency.change_agency", accept_global_perms=False)
+class AgencyQuerySet(GuardedQuerySet):
+    pass
 
 
 class AgencyManager(Manager.from_queryset(AgencyQuerySet)):
+    pass
+
+
+class TourQuerySet(GuardedQuerySet):
+    pass
+
+
+class TourManager(Manager.from_queryset(TourQuerySet)):
     pass
