@@ -1,13 +1,11 @@
 from django.db import models
+from compat.django_guardian.models import GuardedModel
 
 from event.models import Event
-from .managers import AgencyManager, TourManager
 
 
-class Agency(models.Model):
+class Agency(GuardedModel):
     title = models.CharField(max_length=50, unique=True)
-
-    objects = AgencyManager()
 
     class Meta:
         verbose_name_plural = "agencies"
@@ -16,12 +14,9 @@ class Agency(models.Model):
         return self.title
 
 
-class Tour(models.Model):
+class Tour(GuardedModel):
     agency = models.ForeignKey(Agency, models.PROTECT)
     event = models.ForeignKey(Event, models.PROTECT)
-
-    objects = TourManager()
-
 
     class Meta:
         ordering = ["agency"]

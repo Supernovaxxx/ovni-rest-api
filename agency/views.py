@@ -1,7 +1,5 @@
 from rest_framework import viewsets, permissions
 
-from guardian.shortcuts import get_objects_for_user
-
 from .models import Agency, Tour
 from .serializers import AgencySerializer, TourSerializer
 from authentication.permissions import IsReadOnly
@@ -19,8 +17,7 @@ class TourViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.DjangoObjectPermissions | IsReadOnly]
 
     def perform_create(self, serializer):
-        user = self.request.user
-        agency = get_objects_for_user(
-            user, "change_agency", Agency.objects.all(), accept_global_perms=False
-        )[0]
-        serializer.save(agency=agency)
+        if agency := Agency.objects.get_objects_for_user(self.request.user).first():
+            serializer.save(agency=agency)
+
+        # TODO: Deal with the case when this function is called, but the user has no agency.
