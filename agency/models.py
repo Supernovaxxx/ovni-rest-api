@@ -18,12 +18,12 @@ class Tour(GuardedModel):
     agency = models.ForeignKey(Agency, models.PROTECT)
     event = models.ForeignKey(Event, models.PROTECT)
 
+    @property
+    def heading(self):
+        return f"Tour to '{self.event}' owned by '{self.agency}'."
+
     class Meta:
         ordering = ["agency"]
 
     def __str__(self):
-        return f"Tour to '{self.event}' owned by '{self.agency}'."
-
-    @property
-    def heading(self):
-        return str(self)
+        return self.heading
