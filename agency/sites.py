@@ -6,7 +6,8 @@ class AgencyAdminSite(admin.AdminSite):
     site_header = "Agency administration"
 
     def has_permission(self, request):
-        return super().has_permission(request) or request.user.groups.filter(name__contains="Managers").exists()  # TODO Find a trustworthy way to catch user's groups.
+        from agency.models import Agency
+        return Agency.objects.for_user(request.user).exists()
 
 
 agency_admin_site = AgencyAdminSite(name="agency_admin")
