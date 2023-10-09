@@ -7,45 +7,45 @@
 - model: event.event
   pk: 1
   fields:
-    title: '1'
-    subtitle: '1'
+    title: 'Event One'
+    subtitle: 'Subtitle One'
     start_date: 2023-07-10 12:03:31+00:00
     end_date: 2023-07-10 12:03:32+00:00
 - model: event.event
   pk: 2
   fields:
-    title: '2'
-    subtitle: '2'
+    title: 'Evento Two'
+    subtitle: 'Subtitle Two'
     start_date: 2023-07-10 12:04:57+00:00
     end_date: 2023-07-10 12:04:58+00:00
 - model: event.event
   pk: 3
   fields:
-    title: '3'
-    subtitle: '3'
+    title: 'Event Three'
+    subtitle: 'Subtitle Three'
     start_date: 2023-07-10 12:05:06+00:00
     end_date: 2023-07-10 12:05:07+00:00
+- model: event.event
+  pk: 4
+  fields:
+    title: 'Event Four'
+    subtitle: 'Subtitle Four'
+    start_date: 2024-07-10 12:05:06+00:00
+    end_date: 2024-07-10 12:05:07+00:00
 
 # Agencies:
 - model: agency.agency
   pk: 1
   fields:
-    title: agency 1
+    title: Agency 1
 - model: agency.agency
   pk: 2
   fields:
-    title: agency 2
+    title: Agency 2
 - model: agency.agency
   pk: 3
   fields:
-    title: agency 3
-
-# Tours:
-- model: agency.tour
-  pk: 1
-  fields:
-    agency: 1
-    event: 1
+    title: Agency 3
 
 # Users:
 - model: authentication.user
@@ -67,7 +67,8 @@
 - model: authentication.user
   pk: 2
   fields:
-    password: pbkdf2_sha256$390000$xnwAeldidwqtmFlJegd1dq$UPqatjwo8vX16FY0hAt3CW8kXasWq5Kdsm87pm/XfuU=
+    # password: dev
+    password: pbkdf2_sha256$600000$kM8VJVhfx4yd20mLNYZkWa$63EQSRr8C4J9zHJrUVxOjfkXnzmfG9UXWtppYOl6GOM=
     last_login: null
     is_superuser: false
     username: user1
@@ -75,6 +76,22 @@
     last_name: ''
     email: admin@ovni.com
     is_staff: false
+    is_active: true
+    date_joined: 2022-10-05 16:50:52+00:00
+    groups: []
+    user_permissions: []
+- model: authentication.user
+  pk: 3
+  fields:
+    # password: dev
+    password: pbkdf2_sha256$600000$kM8VJVhfx4yd20mLNYZkWa$63EQSRr8C4J9zHJrUVxOjfkXnzmfG9UXWtppYOl6GOM=
+    last_login: null
+    is_superuser: false
+    username: user2
+    first_name: ''
+    last_name: ''
+    email: admin@ovni.com
+    is_staff: true
     is_active: true
     date_joined: 2022-10-05 16:50:52+00:00
     groups: []
