@@ -44,6 +44,9 @@ CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS") if not DEBUG else []
 # Application definition
 
 INSTALLED_APPS = [
+    # dal and dal_select2 must be loaded before django.contrib.admin
+    'dal',
+    'dal_select2',
     # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
@@ -55,6 +58,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "guardian",
     "corsheaders",
+    "nested_admin",
     # Rest framework apps
     "rest_framework",
     "rest_framework.authtoken",

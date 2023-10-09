@@ -17,11 +17,18 @@ Including another URLconf
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.shortcuts import redirect
-from django.urls import path, include
+from django.urls import path, include, re_path
 from .routers import router
 from agency.sites import agency_admin_site
+from geo.views import PlaceAutocomplete
+
 
 urlpatterns = [
+    re_path(
+        r'^place-autocomplete/$',
+        PlaceAutocomplete.as_view(create_field='place_id', validate_create=True),
+        name='place-autocomplete',
+    ),
     path("", lambda req: redirect("api/")),
     path("admin/", admin.site.urls),
     path("agency-admin/", agency_admin_site.urls),
