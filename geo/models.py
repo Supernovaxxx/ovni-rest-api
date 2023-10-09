@@ -19,6 +19,6 @@ class Place(models.Model):
     objects = PlaceManager()
 
     def __str__(self):
-        return self.formatted_address
+        return self.formatted_address or self.place_id
 
 
