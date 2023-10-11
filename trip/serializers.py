@@ -1,5 +1,4 @@
-from rest_framework import serializers
-from drf_writable_nested.serializers import WritableNestedModelSerializer
+from compat.django_rest_framework import serializers
 
 from geo.serializers import PlaceSerializer
 from .models import Trip, Waypoint
@@ -23,7 +22,7 @@ class WaypointSerializer(serializers.ModelSerializer):
         return representation
 
 
-class TripSerializer(WritableNestedModelSerializer):
+class TripSerializer(serializers.WriteableNestedModelSerializer):
     route = WaypointSerializer(many=True, allow_empty=False)
 
     class Meta:
