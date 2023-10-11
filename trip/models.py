@@ -6,7 +6,7 @@ from geo.models import Place
 
 
 class Trip(models.Model):
-    tour = models.ForeignKey(Tour, models.PROTECT)
+    tour = models.ForeignKey(Tour, models.CASCADE, related_name="trips")
     slug = models.SlugField()
     departure = models.DateTimeField()
     capacity = models.IntegerField()
@@ -36,4 +36,3 @@ class Waypoint(models.Model):
 
     def __str__(self):
         return self.title or self.place
-
