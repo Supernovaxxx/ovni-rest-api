@@ -15,6 +15,7 @@ djangorestframework~=3.14
 djangorestframework-simplejwt~=5.2
 dj-rest-auth[with_social]~=4.0
 drf_standardized_errors~=0.12
+drf-writable-nested~=0.7
 googlemaps~=4.10
 
 whitenoise~=6.2
