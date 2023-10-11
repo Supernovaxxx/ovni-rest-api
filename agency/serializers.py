@@ -1,5 +1,4 @@
-from rest_framework import serializers
-from drf_writable_nested.serializers import WritableNestedModelSerializer
+from compat.django_rest_framework import serializers
 
 from trip.serializers import TripSerializer
 from .models import Agency, Tour
@@ -11,17 +10,12 @@ class AgencySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TourSerializer(WritableNestedModelSerializer):
+_NestedTripSerializer = TripSerializer.with_meta(exclude=['tour'])
+
+
+class TourSerializer(serializers.WriteableNestedModelSerializer):
     agency = serializers.PrimaryKeyRelatedField(read_only=True)
-    trips = type(
-        'TripSerializer',
-        (TripSerializer,),
-        {
-            'Meta': type('Meta', (), {
-                'model': TripSerializer.Meta.model, 'exclude': ['tour']
-            })
-        },
-    )(many=True, allow_empty=False)
+    trips = _NestedTripSerializer(many=True, allow_empty=False)
 
     class Meta:
         model = Tour
