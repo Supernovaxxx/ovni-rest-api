@@ -16,7 +16,7 @@ from datetime import timedelta
 from django.core.management.utils import get_random_secret_key
 from django.core.exceptions import ImproperlyConfigured
 
-from .env import env
+from __project__.env import env
 
 
 # Project path record
@@ -106,6 +106,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "__project__.wsgi.application"
 
+SILENCED_SYSTEM_CHECKS = ["staticfiles.W004"]
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -215,4 +216,4 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
 }
 
-DRF_STANDARDIZED_ERRORS = {"ENABLE_IN_DEBUG_FOR_UNHANDLED_EXCEPTIONS": True}
+DRF_STANDARDIZED_ERRORS = {"ENABLE_IN_DEBUG_FOR_UNHANDLED_EXCEPTIONS": not DEBUG}
