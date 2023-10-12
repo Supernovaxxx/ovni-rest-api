@@ -2,7 +2,6 @@ from datetime import datetime
 
 
 from django.contrib import admin
-from django.db.models import Q
 from django.utils.html import format_html
 from django.urls import reverse
 
@@ -47,3 +46,6 @@ class EventAdmin(admin.ModelAdmin):
         url = reverse("agency_admin:agency_tour_add")
         url += f"?event={obj.id}"
         return format_html("<a href='{}'>Create Tour</a>", url)
+
+
+admin.site.register(Event)
