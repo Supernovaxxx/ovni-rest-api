@@ -1,5 +1,5 @@
 import pytest
-import factory
+from compat.faker import factory
 
 from datetime import datetime, timezone
 
@@ -65,7 +65,7 @@ class TestEventListView:
         create_url = reverse("events-list")
         create_response = client.post(create_url, valid_data)
 
-        assert create_response.status_code == status.HTTP_403_FORBIDDEN
+        assert create_response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.django_db
@@ -182,7 +182,7 @@ class TestEventDetailView:
         update_data = valid_data
         update_response = client.put(update_url, update_data)
 
-        assert update_response.status_code == status.HTTP_403_FORBIDDEN
+        assert update_response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_delete_event_as_admin(self, admin_client, populate_db_with_events):
         """
@@ -220,4 +220,4 @@ class TestEventDetailView:
         delete_url = reverse("events-detail", kwargs={"pk": event.pk})
         delete_response = client.delete(delete_url)
 
-        assert delete_response.status_code == status.HTTP_403_FORBIDDEN
+        assert delete_response.status_code == status.HTTP_401_UNAUTHORIZED

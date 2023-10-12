@@ -1,8 +1,7 @@
 import random
 from datetime import timedelta, UTC, datetime
-import factory
 
-from compat.faker import Faker
+from compat.faker import factory, Faker
 from event.models import Event
 
 

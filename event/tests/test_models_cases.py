@@ -1,5 +1,4 @@
-import factory
-
+from compat.faker import factory
 from .factories import EventFactory
 
 from pytest_cases import case, parametrize
