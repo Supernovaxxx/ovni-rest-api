@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "agency",
     "trip",
     "geo",
+    "sales",
 ]
 
 MIDDLEWARE = [
