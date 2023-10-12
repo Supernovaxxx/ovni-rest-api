@@ -2,6 +2,7 @@ from django.db import models
 from compat.django_guardian.models import GuardedModel
 
 from event.models import Event
+from .managers import TourManager
 
 
 class Agency(GuardedModel):
@@ -17,6 +18,8 @@ class Agency(GuardedModel):
 class Tour(GuardedModel):
     agency = models.ForeignKey(Agency, models.PROTECT)
     event = models.ForeignKey(Event, models.PROTECT)
+
+    objects = TourManager()
 
     @property
     def heading(self):

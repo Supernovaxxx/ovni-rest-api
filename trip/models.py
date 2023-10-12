@@ -1,5 +1,6 @@
 from django.db import models
 
+from .managers import TripManager, WaypointManager
 from agency.models import Tour
 
 from geo.models import Place
@@ -10,6 +11,8 @@ class Trip(models.Model):
     slug = models.SlugField()
     departure = models.DateTimeField()
     capacity = models.IntegerField()
+
+    objects = TripManager()
 
     def __str__(self):
         return self.slug
@@ -27,6 +30,8 @@ class Waypoint(models.Model):
     type = models.CharField(max_length=50, choices=Types.choices)
     title = models.CharField(max_length=50, null=True, blank=True)
     detail = models.CharField(max_length=255, null=True, blank=True)
+
+    objects = WaypointManager()
 
     class Meta:
         ordering = ["trip", "order"]
