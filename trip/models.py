@@ -2,7 +2,6 @@ from django.db import models
 
 from .managers import TripManager, WaypointManager
 from agency.models import Tour
-
 from geo.models import Place
 
 
@@ -40,4 +39,4 @@ class Waypoint(models.Model):
         ]
 
     def __str__(self):
-        return self.title or self.place
+        return self.title or str(self.place)
