@@ -1,8 +1,9 @@
-from django.db import models
 from django.db.models import Count
 
+from compat.django_guardian.managers import GuardedManager
 
-class TripManager(models.Manager):
+
+class TripManager(GuardedManager):
     def get_queryset(self):
         return (
             super()
@@ -11,7 +12,7 @@ class TripManager(models.Manager):
         )
 
 
-class WaypointManager(models.Manager):
+class WaypointManager(GuardedManager):
     def get_queryset(self):
         return (
             super()
