@@ -3,6 +3,8 @@ from django.db import models
 
 from trip.models import Waypoint
 
+from .managers import TicketManager
+
 
 User = get_user_model()
 
@@ -23,3 +25,5 @@ class Ticket(models.Model):
     passenger = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tickets')
     waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, related_name='tickets')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='tickets')
+
+    objects = TicketManager()

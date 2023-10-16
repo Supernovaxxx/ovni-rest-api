@@ -1,10 +1,19 @@
+from django.contrib.auth import get_user_model
+
 from compat.django_rest_framework import serializers
 
 from .models import Ticket, Order
 
 
+class PassengerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ['id', 'username', 'first_name', 'last_name']
+
+
 class TicketSerializer(serializers.ModelSerializer):
-    passenger = serializers.SlugRelatedField(read_only=True, slug_field='username')
+    passenger = PassengerSerializer(read_only=True)
 
     class Meta:
         model = Ticket

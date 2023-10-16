@@ -1,17 +1,14 @@
 from compat.django_rest_framework import serializers
 
-from sales.serializers import TicketSerializer
+from sales.serializers import PassengerSerializer
 from geo.serializers import PlaceSerializer
 from .models import Trip, Waypoint
-
-
-_TicketPassengersNestedSerializer = TicketSerializer.with_meta(fields=['passenger'])
 
 
 class WaypointSerializer(serializers.ModelSerializer):
     place_id = PlaceSerializer(source='place')
     passenger_count = serializers.IntegerField(read_only=True)
-    passengers = _TicketPassengersNestedSerializer(many=True, read_only=True, source='tickets')
+    passengers = PassengerSerializer(many=True, read_only=True, source='tickets.passengers')
 
     class Meta:
         model = Waypoint
@@ -24,10 +21,6 @@ class WaypointSerializer(serializers.ModelSerializer):
         place_representation = representation.pop('place_id')
         for field_name in place_representation:
             representation[field_name] = place_representation[field_name]
-
-        representation['passengers'] = [passenger['passenger']
-                                        for passenger
-                                        in representation.pop('passengers')]
 
         return representation
 
