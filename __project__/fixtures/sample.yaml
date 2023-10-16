@@ -54,12 +54,6 @@
     agency: 1
     event: 1
 
-- model: agency.tour
-  pk: 2
-  fields:
-    agency: 2
-    event: 2
-
 # Users:
 - model: authentication.user
   pk: 1
@@ -84,7 +78,7 @@
     password: pbkdf2_sha256$600000$kM8VJVhfx4yd20mLNYZkWa$63EQSRr8C4J9zHJrUVxOjfkXnzmfG9UXWtppYOl6GOM=
     last_login: null
     is_superuser: false
-    username: user1
+    username: Joao
     first_name: ''
     last_name: ''
     email: admin@ovni.com
@@ -100,7 +94,7 @@
     password: pbkdf2_sha256$600000$kM8VJVhfx4yd20mLNYZkWa$63EQSRr8C4J9zHJrUVxOjfkXnzmfG9UXWtppYOl6GOM=
     last_login: null
     is_superuser: false
-    username: user2
+    username: Arthur
     first_name: ''
     last_name: ''
     email: admin@ovni.com
@@ -109,3 +103,106 @@
     date_joined: 2022-10-05 16:50:52+00:00
     groups: []
     user_permissions: []
+- model: authentication.user
+  pk: 4
+  fields:
+    # password: dev
+    password: pbkdf2_sha256$600000$kM8VJVhfx4yd20mLNYZkWa$63EQSRr8C4J9zHJrUVxOjfkXnzmfG9UXWtppYOl6GOM=
+    last_login: null
+    is_superuser: false
+    username: Juliana
+    first_name: ''
+    last_name: ''
+    email: admin@ovni.com
+    is_staff: true
+    is_active: true
+    date_joined: 2022-10-05 16:50:52+00:00
+    groups: []
+    user_permissions: []
+
+# Trips:
+- model: trip.trip
+  pk: 1
+  fields:
+    tour: 1
+    slug: magnam-omnis-velit
+    departure: 2023-10-16 01:40:15.932000+00:00
+    capacity: 317
+
+# Waypoints:
+- model: trip.waypoint
+  pk: 1
+  fields:
+    trip: 1
+    place: ChIJAxMtuRY4J5URsXRWzJtSUY4
+    order: null
+    type: Boarding
+    title: null
+    detail: null
+- model: trip.waypoint
+  pk: 2
+  fields:
+    trip: 1
+    place: ChIJx8KPSRk4J5URolEmyJtshAA
+    order: null
+    type: Stop
+    title: null
+    detail: null
+
+# Places:
+- model: geo.place
+  pk: ChIJAxMtuRY4J5URsXRWzJtSUY4
+  fields:
+    formatted_address: R. Bocaiúva, 2468 - Centro, Florianópolis - SC, 88015-902,
+      Brazil
+    city: Florianópolis
+    state: SC
+    country: BR
+    latitude: '-27.58489020'
+    longitude: '-48.54503490'
+- model: geo.place
+  pk: ChIJx8KPSRk4J5URolEmyJtshAA
+  fields:
+    formatted_address: R. Esteves Júnior, 711 - Centro, Florianópolis - SC, 88015-130,
+      Brazil
+    city: Florianópolis
+    state: SC
+    country: BR
+    latitude: '-27.58888740'
+    longitude: '-48.55346500'
+
+# Orders:
+- model: sales.order
+  pk: 1
+  fields:
+    buyer: 2
+    value: '11.00'
+    emission_date: 2023-10-16 01:22:23.051549+00:00
+    status: Pending
+- model: sales.order
+  pk: 2
+  fields:
+    buyer: 3
+    value: '111.00'
+    emission_date: 2023-10-16 01:22:29.591397+00:00
+    status: Pending
+
+# Tickets:
+- model: sales.ticket
+  pk: 1
+  fields:
+    passenger: 3
+    waypoint: 1
+    order: 1
+- model: sales.ticket
+  pk: 2
+  fields:
+    passenger: 2
+    waypoint: 1
+    order: 1
+- model: sales.ticket
+  pk: 3
+  fields:
+    passenger: 1
+    waypoint: 2
+    order: 2
