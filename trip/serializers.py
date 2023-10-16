@@ -25,6 +25,10 @@ class WaypointSerializer(serializers.ModelSerializer):
         for field_name in place_representation:
             representation[field_name] = place_representation[field_name]
 
+        representation['passengers'] = [passenger['passenger']
+                                        for passenger
+                                        in representation.pop('passengers')]
+
         return representation
 
 
