@@ -8,7 +8,7 @@ class TripManager(GuardedManager):
         return (
             super()
             .get_queryset()
-            .annotate(trip_passenger_count=Count('route__tickets__passenger'))
+            .annotate(passenger_count=Count('route__tickets__passenger'))
         )
 
 
@@ -17,7 +17,7 @@ class WaypointManager(GuardedManager):
         return (
             super()
             .get_queryset()
-            .annotate(waypoint_passenger_count=Count('tickets__passenger'))
+            .annotate(passenger_count=Count('tickets__passenger'))
 
             # TODO: Annotate a list of passenger using django.contrib.postgres.aggregates.ArrayAgg
         )

@@ -9,5 +9,5 @@ class TourManager(GuardedManager):
             super()
             .get_queryset()
             .annotate(revenue=Sum('trips__route__tickets__order__value'))
-            .annotate(tour_passenger_count=Count('trips__passenger_count'))
+            .annotate(passenger_count=Count('trips__route__tickets__passenger'))
         )

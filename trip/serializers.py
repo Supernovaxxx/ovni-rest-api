@@ -10,8 +10,8 @@ _TicketPassengersNestedSerializer = TicketSerializer.with_meta(fields=['passenge
 
 class WaypointSerializer(serializers.ModelSerializer):
     place_id = PlaceSerializer(source='place')
-    waypoint_passenger_count = serializers.IntegerField(read_only=True)
-    tickets = _TicketPassengersNestedSerializer(many=True, read_only=True)
+    passenger_count = serializers.IntegerField(read_only=True)
+    passengers = _TicketPassengersNestedSerializer(many=True, read_only=True, source='tickets')
 
     class Meta:
         model = Waypoint
@@ -30,7 +30,7 @@ class WaypointSerializer(serializers.ModelSerializer):
 
 class TripSerializer(serializers.WriteableNestedModelSerializer):
     route = WaypointSerializer(many=True, allow_empty=False)
-    trip_passenger_count = serializers.IntegerField(read_only=True)
+    passenger_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Trip
