@@ -20,6 +20,6 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    passenger = models.ForeignKey(User, on_delete=models.CASCADE)
+    passenger = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tickets')
     waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, related_name='tickets')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='tickets')
