@@ -20,10 +20,9 @@ class TicketSerializer(serializers.WriteableNestedModelSerializer):
         exclude = ['order', 'id']
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(many=True, read_only=True)
 class OrderSerializer(serializers.WriteableNestedModelSerializer):
     tickets = TicketSerializer(many=True, allow_empty=False)
+    ticket_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Order

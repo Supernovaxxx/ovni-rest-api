@@ -1,4 +1,6 @@
-from django.db.models import QuerySet, Manager
+from django.db.models import QuerySet, Manager, Count
+
+from compat.django_guardian.managers import GuardedManager
 
 
 class TicketQueryset(QuerySet):
@@ -15,4 +17,13 @@ class TicketManager(Manager.from_queryset(TicketQueryset)):
             super()
             .get_queryset()
             .select_related('passenger', 'waypoint', 'order')
+        )
+
+
+class OrderManager(GuardedManager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .annotate(ticket_count=Count('tickets'))
         )

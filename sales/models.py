@@ -3,7 +3,7 @@ from django.db import models
 
 from trip.models import Waypoint
 
-from .managers import TicketManager
+from .managers import TicketManager, OrderManager
 
 
 User = get_user_model()
@@ -18,11 +18,13 @@ class Order(models.Model):
     buyer = models.ForeignKey(User, on_delete=models.CASCADE)
     value = models.DecimalField(max_digits=10, decimal_places=2)
     emission_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=50, choices=Types.choices, default='PENDING')
+    status = models.CharField(max_length=50, choices=Types.choices, default='Pending')
+
+    objects = OrderManager()
 
 
 class Ticket(models.Model):
-    passenger = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tickets')
+    passenger = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tickets')
     waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, related_name='tickets')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='tickets')
 
