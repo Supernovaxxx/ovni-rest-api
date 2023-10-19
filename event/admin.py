@@ -34,6 +34,7 @@ class IsUpcomingFilter(admin.SimpleListFilter):
         return queryset
 
 
+@admin.register(Event, site=admin.site)
 @admin.register(Event, site=agency_admin_site)
 class EventAdmin(admin.ModelAdmin):
     list_display = ["title", "start_date", "end_date", "create_tour_link"]
@@ -46,6 +47,3 @@ class EventAdmin(admin.ModelAdmin):
         url = reverse("agency_admin:agency_tour_add")
         url += f"?event={obj.id}"
         return format_html("<a href='{}'>Create Tour</a>", url)
-
-
-admin.site.register(Event)

@@ -12,6 +12,7 @@ from trip.admin import TripAdminInline
 
 
 @admin.register(Tour, site=agency_admin_site)
+@admin.register(Tour, site=admin.site)
 class TourAdmin(GuardedModelAdmin, nested_admin.NestedModelAdmin):
     list_display = ["heading", "event_details_link"]
     search_fields = ["event__title"]
@@ -44,10 +45,9 @@ class TourAdmin(GuardedModelAdmin, nested_admin.NestedModelAdmin):
         super().save_model(request, obj, form, change)
 
 
+@admin.register(Agency, site=admin.site)
 @admin.register(Agency, site=agency_admin_site)
 class AgencyAdmin(GuardedModelAdmin):
     pass
 
 
-admin.site.register(Agency)
-admin.site.register(Tour)
