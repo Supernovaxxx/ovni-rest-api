@@ -9,15 +9,26 @@ class PassengerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'username', 'first_name', 'last_name']
+        fields = ['username', 'first_name', 'last_name']
 
 
-class TicketSerializer(serializers.WriteableNestedModelSerializer):
-    passenger = PassengerSerializer().with_meta(fields=['id'])
+class TicketSerializer(serializers.ModelSerializer):
+    passenger_id = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all(), source='passenger')
+    passenger_info = PassengerSerializer(source='passenger', read_only=True)
 
     class Meta:
         model = Ticket
-        exclude = ['order', 'id']
+        exclude = ['order', 'id', 'passenger']
+
+    def to_representation(self, instance):
+        """Overrides Ticket representation to include flattened Place attributes."""
+        representation = super().to_representation(instance)
+
+        place_representation = representation.pop('passenger_info')
+        for field_name in place_representation:
+            representation[field_name] = place_representation[field_name]
+
+        return representation
 
 
 class OrderSerializer(serializers.WriteableNestedModelSerializer):
