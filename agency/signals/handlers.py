@@ -1,58 +1,27 @@
-import itertools
-
-from django.contrib.auth.models import Group, Permission
-from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from guardian.shortcuts import assign_perm, get_groups_with_perms
-
-from ..models import Agency, Tour
+from ..models import Agency, AgencyGroup, Tour
 
 
 @receiver(post_save, sender=Agency)
 def set_permissions(sender, instance, created, **kwargs):
     """
-    When an Agency is created, this signal will create a managers group for it and
-    assign the managers permission to edit the Agency and create Tours.
+    When an `Agency` is created, this signal will create its related `auth.Group`
+    and assign the agency-type group default permissions to it.
     """
 
     if created:
-        group = Group.objects.create(name=f"{instance.title} Managers")
-
-        perms = Permission.objects.filter(
-            Q(codename__in=[
-                "view_agency",
-                "change_agency",
-                "add_tour",
-                "view_tour",
-                "change_tour",
-                "delete_tour",
-                "view_event",
-            ])
-        )
-
-        # Assign model level permissions
-        for perm in perms:
-            group.permissions.add(perm.id)
-
-        # Assign object level permissions
-        for perm in ["view_agency", "change_agency"]:
-            assign_perm(perm, group, instance)
+        AgencyGroup.objects.create(agency=instance)
 
 
 @receiver(post_save, sender=Tour)
 def set_permissions(sender, instance, created, **kwargs):
     """
-    When a new Tour is created, this signal will retrieve the associated manager group for it and
-    assign the appropriate object level permissions for the Tour.
+    When a new `Tour` is created, this signal will retrieve the related `AgencyGroup`
+    and assign the appropriate object level permissions to it.
     """
 
     if created:
-        groups = get_groups_with_perms(instance.agency)
-        perms = ["view_tour", "change_tour", "delete_tour"]
-
-        groups_and_perms = itertools.product(groups, perms)
-
-        for group, perm in groups_and_perms:
-            assign_perm(perm, group, instance)
+        for perm in ["view_tour", "change_tour", "delete_tour"]:
+            instance.agency.group.add_obj_perm(perm, instance)

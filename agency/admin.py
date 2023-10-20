@@ -46,7 +46,7 @@ class TourAdmin(GuardedModelAdmin, nested_admin.NestedModelAdmin):
 
 @admin.register(Agency, site=agency_admin_site)
 class AgencyAdmin(GuardedModelAdmin):
-    pass
+    exclude = ('group',)
 
 
 admin.site.register(Agency)
