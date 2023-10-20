@@ -54,6 +54,13 @@
     agency: 1
     event: 1
 
+
+- model: agency.tour
+  pk: 2
+  fields:
+    agency: 2
+    event: 2
+
 # Users:
 - model: authentication.user
   pk: 1

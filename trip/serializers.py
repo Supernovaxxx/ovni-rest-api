@@ -14,6 +14,7 @@ class WaypointSerializer(serializers.ModelSerializer):
         model = Waypoint
         exclude = ['trip', 'id', 'order', 'place']
 
+
     def to_representation(self, instance):
         """Overrides Waypoint representation to include flattened Place attributes."""
         representation = super().to_representation(instance)
