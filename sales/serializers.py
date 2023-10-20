@@ -21,7 +21,7 @@ class TicketSerializer(serializers.ModelSerializer):
         exclude = ['order', 'id', 'passenger']
 
     def to_representation(self, instance):
-        """Overrides Ticket representation to include flattened Place attributes."""
+        """Overrides Ticket representation to include flattened Passenger details."""
         representation = super().to_representation(instance)
 
         place_representation = representation.pop('passenger_info')
