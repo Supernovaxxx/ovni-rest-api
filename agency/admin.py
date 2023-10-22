@@ -11,8 +11,8 @@ from agency.sites import agency_admin_site
 from trip.admin import TripAdminInline
 
 
-@admin.register(Tour, site=agency_admin_site)
 @admin.register(Tour, site=admin.site)
+@admin.register(Tour, site=agency_admin_site)
 class TourAdmin(GuardedModelAdmin, nested_admin.NestedModelAdmin):
     list_display = ["heading", "event_details_link"]
     search_fields = ["event__title"]

@@ -6,15 +6,18 @@ from .models import Ticket, Order
 
 
 class PassengerSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = get_user_model()
-        fields = ['username', 'first_name', 'last_name']
+        fields = ['id', 'username', 'first_name', 'last_name']
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    passenger_id = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all(), source='passenger')
-    passenger_info = PassengerSerializer(source='passenger', read_only=True)
+    passenger_id = serializers.PrimaryKeyRelatedField(
+        queryset=get_user_model().objects.all(), source='passenger'
+    )
+    passenger_info = PassengerSerializer.with_meta(
+        fields=['username', 'first_name', 'last_name']
+    )(source='passenger', read_only=True)
 
     class Meta:
         model = Ticket
