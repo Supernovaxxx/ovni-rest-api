@@ -1,11 +1,10 @@
 from django.contrib.auth.models import GroupManager
 
+from distinct.managers import DistinctManager, DistinctQuerySet
 
 class GroupTypeManager(GroupManager):
 
-    @property
-    def kind(self):
-        return self.model.__kind__
+class GroupTypeManager(DistinctManager, GroupManager):
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related('permissions')
@@ -14,11 +13,7 @@ class GroupTypeManager(GroupManager):
         return self.get(kind=self.kind, name=name)
 
 
-class ModelGroupQuerySet:
-
-    @property
-    def kind(self):
-        return self.model.__kind__
+class ModelGroupQuerySet(DistinctQuerySet):
 
     def create(self, **kwargs):
         related_fieldname = self.kind.lower()
