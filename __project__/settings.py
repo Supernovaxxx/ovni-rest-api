@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     "allauth.account",
     "guardian",
     "corsheaders",
-    "nested_admin",
     # Rest framework apps
     "rest_framework",
     "rest_framework.authtoken",
@@ -66,8 +65,10 @@ INSTALLED_APPS = [
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "drf_standardized_errors",
+    "nested_admin",
     # Project apps
     "authentication",
+    "authorization",
     "event",
     "agency",
     "trip",

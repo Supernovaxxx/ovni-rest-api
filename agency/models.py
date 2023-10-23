@@ -1,10 +1,10 @@
-from django.contrib.auth.models import Group, Permission
 from django.db import models
 from compat.django_guardian.models import GuardedModel
 
+from authorization.models import ModelGroup
 from event.models import Event
 
-from .managers import TourManager, AgencyGroupQuerySet
+from .managers import TourManager
 
 
 class Agency(GuardedModel):
@@ -18,7 +18,9 @@ class Agency(GuardedModel):
         return self.title
 
 
-class AgencyGroup(Group):
+class AgencyGroup(ModelGroup):
+
+    __kind__ = 'Agency'
 
     default_permissions = [
         "view_agency",
@@ -35,30 +37,9 @@ class AgencyGroup(Group):
         "change_agency",
     ]
 
-    objects = AgencyGroupQuerySet.as_manager()
-
     class Meta:
         proxy = True
         auto_created = True
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.create_default_permissions()
-
-    def create_default_permissions(self):
-        self.permissions.set(
-            self._get_permissions_for_codenames_in('default_permissions')
-        )
-
-        related_fieldname = self.__kind__.lower()
-        related_object = getattr(self, related_fieldname)
-
-        for perm in self._get_permissions_for_codenames_in('default_object_permissions'):
-            self.add_obj_perm(perm, related_object)
-
-    def _get_permissions_for_codenames_in(self, attrname):
-        codenames = getattr(self, attrname)
-        return Permission.objects.filter(codename__in=codenames)
 
 
 class Tour(GuardedModel):
