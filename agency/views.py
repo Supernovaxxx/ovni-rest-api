@@ -10,6 +10,9 @@ class AgencyViewSet(viewsets.ModelViewSet):
     serializer_class = AgencySerializer
     permission_classes = [permissions.DjangoObjectPermissions | IsReadOnly]
 
+    def get_queryset(self):
+        return Agency.objects.for_user(self.request.user)
+
 
 class TourViewSet(viewsets.ModelViewSet):
     queryset = Tour.objects.all()
