@@ -3,16 +3,19 @@ from guardian.shortcuts import get_objects_for_user
 
 
 class GuardedQuerySet(QuerySet):
-    def for_user(self, user):
+    def for_user(self, user, actions=('manage',)):
         if user.is_anonymous:
             return self.none()
 
-        app_label = self.model._meta.app_label
         model_name = self.model.__name__.lower()
 
         return get_objects_for_user(
             user,
-            f"{app_label}.change_{model_name}",
+            perms=[
+                f'{action}_{model_name}'
+                for action
+                in actions
+            ],
             klass=self.model,
             accept_global_perms=False
         )
