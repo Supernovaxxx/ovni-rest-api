@@ -1,9 +1,9 @@
-from django.db.models import QuerySet, Manager, Count
+from django.db.models import Manager, Count
 
-from compat.django_guardian.managers import GuardedManager
+from agency.managers import AgencyDependentManager, AgencyDependentQuerySet
 
 
-class TicketQueryset(QuerySet):
+class TicketQueryset(AgencyDependentQuerySet):
     def passengers(self):
         from django.contrib.auth import get_user_model
         User = get_user_model()
@@ -11,16 +11,16 @@ class TicketQueryset(QuerySet):
         return User.objects.filter(tickets__in=self.all())
 
 
-class TicketManager(Manager.from_queryset(TicketQueryset)):
+class TicketManager(Manager.from_queryset(AgencyDependentQuerySet)):
     def get_queryset(self):
         return (
             super()
             .get_queryset()
-            .select_related('passenger', 'waypoint', 'order')
+            .select_related('passenger', 'waypoint', 'order', 'waypoint__trip__tour__agency')
         )
 
 
-class OrderManager(GuardedManager):
+class OrderManager(AgencyDependentManager):
     def get_queryset(self):
         return (
             super()

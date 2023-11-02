@@ -1,23 +1,24 @@
-from django.db.models import Count
+from django.db.models import Count, Manager
 
-from compat.django_guardian.managers import GuardedManager
+from agency.managers import AgencyDependentManager
 
 
-class TripManager(GuardedManager):
+class TripManager(AgencyDependentManager):
     def get_queryset(self):
         return (
             super()
             .get_queryset()
+            .select_related('tour__agency')
             .annotate(passenger_count=Count('route__tickets__passenger'))
         )
 
 
-class WaypointManager(GuardedManager):
+class WaypointManager(Manager):
     def get_queryset(self):
         return (
             super()
             .get_queryset()
             .annotate(passenger_count=Count('tickets__passenger'))
 
-            # TODO: Annotate a list of passenger using django.contrib.postgres.aggregates.ArrayAgg
+            # TODO: Annotate a list of passengers using django.contrib.postgres.aggregates.ArrayAgg
         )
