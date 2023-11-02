@@ -57,37 +57,3 @@ def set_permissions(sender, instance, created, **kwargs):
 
         for group, perm in groups_and_perms:
             assign_perm(perm, group, instance)
-
-
-@receiver(post_save, sender=Trip)
-def set_permissions(sender, instance, created, **kwargs):
-    """
-    When a new Trip is created, this signal will retrieve the associated manager group for it and
-    assign the appropriate object level permissions for the Trip.
-    """
-
-    if created:
-        groups = get_groups_with_perms(instance.agency)
-        perms = ["view_trip", "change_trip", "delete_trip"]
-
-        groups_and_perms = itertools.product(groups, perms)
-
-        for group, perm in groups_and_perms:
-            assign_perm(perm, group, instance)
-
-
-@receiver(post_save, sender=Order)
-def set_permissions(sender, instance, created, **kwargs):
-    """
-    When a new Order is created, this signal will retrieve the associated manager group for it and
-    assign the appropriate object level permissions for the Order.
-    """
-
-    if created:
-        groups = get_groups_with_perms(instance.agency)
-        perms = ["view_order", "change_order", "delete_order"]
-
-        groups_and_perms = itertools.product(groups, perms)
-
-        for group, perm in groups_and_perms:
-            assign_perm(perm, group, instance)
