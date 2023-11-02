@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 
 from .models import Event
 from .serializers import EventSerializer
-from authentication.permissions import IsReadOnly
+from compat.django_rest_framework.permissions import IsReadOnly
 
 
 class EventViewSet(viewsets.ModelViewSet):

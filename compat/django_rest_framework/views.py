@@ -5,6 +5,8 @@ from .permissions import IsReadOnly
 
 
 class QueryParamFilterableModelViewSet(viewsets.ModelViewSet):
+    """A ModelViewSet that provides filtering of queryset based on query parameters."""
+
     permission_classes = [permissions.DjangoObjectPermissions | IsReadOnly]
 
     def get_queryset(self):

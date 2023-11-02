@@ -1,26 +1,52 @@
-from rest_framework import viewsets, permissions
+from rest_framework.exceptions import PermissionDenied
+
+from compat.django_rest_framework.views import QueryParamFilterableModelViewSet
 
 from .models import Agency, Tour
 from .serializers import AgencySerializer, TourSerializer
-from authentication.permissions import IsReadOnly
+from .permissions import CanManageAgency
+from .utils import get_agency_for_user
 
 
-class AgencyViewSet(viewsets.ModelViewSet):
-    queryset = Agency.objects.all()
-    serializer_class = AgencySerializer
-    permission_classes = [permissions.DjangoObjectPermissions | IsReadOnly]
-
-    def get_queryset(self):
-        return Agency.objects.for_user(self.request.user)
-
-
-class TourViewSet(viewsets.ModelViewSet):
-    queryset = Tour.objects.all()
-    serializer_class = TourSerializer
-    permission_classes = [permissions.DjangoObjectPermissions | IsReadOnly]
+class AgencyRelatedModelViewSet(QueryParamFilterableModelViewSet):
+    permission_classes = [CanManageAgency]
+    get_is_private = False
 
     def perform_create(self, serializer):
-        if agency := Agency.objects.for_user(self.request.user).first():
-            serializer.save(agency=agency)
+        if user_agency := get_agency_for_user(self.request.user):
+            serializer.save(agency=user_agency)
+        else:
+            raise PermissionDenied("You're not a team member of any Agency.")
 
-        # TODO: Deal with the case when this function is called, but the user has no agency.
+    def perform_update(self, serializer):
+        if user_agency := get_agency_for_user(self.request.user):
+            serializer.save(agency=user_agency)
+        else:
+            raise PermissionDenied("You're not a team member of any Agency.")
+
+    def perform_destroy(self, instance):
+        if user_agency := get_agency_for_user(self.request.user):
+
+            if instance.agency == user_agency:
+                instance.delete()
+            else:
+                raise PermissionDenied("The resource you're trying to delete does not belong to your Agency")
+
+        else:
+            raise PermissionDenied("You're not a team member of any Agency.")
+
+
+class PrivateAgencyRelatedModelViewSet(AgencyRelatedModelViewSet):
+    get_is_private = True
+
+
+class AgencyViewSet(QueryParamFilterableModelViewSet):
+    queryset = Agency.objects.all()
+    serializer_class = AgencySerializer
+
+
+class TourViewSet(AgencyRelatedModelViewSet):
+    queryset = Tour.objects.all()
+    serializer_class = TourSerializer
+
+
