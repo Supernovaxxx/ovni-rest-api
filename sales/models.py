@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.functional import classproperty
 
+from agency.models import Agency, AgencyDependentModel
 from trip.models import Waypoint
 
 from .managers import TicketManager, OrderManager
@@ -9,7 +11,7 @@ from .managers import TicketManager, OrderManager
 User = get_user_model()
 
 
-class Order(models.Model):
+class Order(AgencyDependentModel):
     class Types(models.TextChoices):
         PENDING = 'Pending'
         PAID = 'Paid'
@@ -24,9 +26,17 @@ class Order(models.Model):
     objects = OrderManager()
 
 
-class Ticket(models.Model):
+class Ticket(AgencyDependentModel):
     passenger = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tickets')
     waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, related_name='tickets')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='tickets')
 
     objects = TicketManager()
+
+    @property
+    def agency(self):
+        return self.waypoint.trip.tour.agency
+
+    @classproperty
+    def agency_path(cls):
+        return 'waypoint__trip__tour__agency'
