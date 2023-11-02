@@ -22,13 +22,14 @@ def set_permissions(sender, instance, created, **kwargs):
 
         perms = Permission.objects.filter(
             Q(codename__in=[
-                "view_agency",
-                "change_agency",
-                "add_tour",
-                "view_tour",
-                "change_tour",
-                "delete_tour",
-                "view_event",
+                'view_agency',
+                'change_agency',
+                'manage_agency',
+                'add_tour',
+                'view_tour',
+                'change_tour',
+                'delete_tour',
+                'view_event',
             ])
         )
 
@@ -37,7 +38,7 @@ def set_permissions(sender, instance, created, **kwargs):
             group.permissions.add(perm.id)
 
         # Assign object level permissions
-        for perm in ["view_agency", "change_agency"]:
+        for perm in ['view_agency', 'change_agency', 'manage_agency',]:
             assign_perm(perm, group, instance)
 
 
@@ -51,6 +52,40 @@ def set_permissions(sender, instance, created, **kwargs):
     if created:
         groups = get_groups_with_perms(instance.agency)
         perms = ["view_tour", "change_tour", "delete_tour"]
+
+        groups_and_perms = itertools.product(groups, perms)
+
+        for group, perm in groups_and_perms:
+            assign_perm(perm, group, instance)
+
+
+@receiver(post_save, sender=Trip)
+def set_permissions(sender, instance, created, **kwargs):
+    """
+    When a new Trip is created, this signal will retrieve the associated manager group for it and
+    assign the appropriate object level permissions for the Trip.
+    """
+
+    if created:
+        groups = get_groups_with_perms(instance.agency)
+        perms = ["view_trip", "change_trip", "delete_trip"]
+
+        groups_and_perms = itertools.product(groups, perms)
+
+        for group, perm in groups_and_perms:
+            assign_perm(perm, group, instance)
+
+
+@receiver(post_save, sender=Order)
+def set_permissions(sender, instance, created, **kwargs):
+    """
+    When a new Order is created, this signal will retrieve the associated manager group for it and
+    assign the appropriate object level permissions for the Order.
+    """
+
+    if created:
+        groups = get_groups_with_perms(instance.agency)
+        perms = ["view_order", "change_order", "delete_order"]
 
         groups_and_perms = itertools.product(groups, perms)
 
