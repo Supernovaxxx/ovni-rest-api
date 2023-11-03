@@ -2,14 +2,23 @@ from rest_framework import permissions
 from rest_framework.permissions import SAFE_METHODS
 
 from .models import AgencyDependentModel
+from .utils import get_agencies_for_user
 
 
 class CanManageAgency(permissions.BasePermission):
     """Custom permission to be used along with 'AgencyDependentModels'"""
 
     def has_permission(self, request, view):
-        if request.method == 'POST' and request.user.is_authenticated:
-            return request.user.has_perm('agency.manage_agency')
+        user = request.user
+
+        if request.method == 'POST':
+            if user.is_authenticated:
+                return user.has_perm('agency.manage_agency')
+            return False
+
+        elif view.get_is_private:
+            return get_agencies_for_user(user).exists()
+
         return True
 
     def has_object_permission(self, request, view, obj):
@@ -19,11 +28,9 @@ class CanManageAgency(permissions.BasePermission):
                 return True
 
             if request.method in SAFE_METHODS:
-                if view.get_is_private:
-                    return obj.user_can_manage(request.user)
                 return True
-            else:
-                return obj.user_can_manage(request.user)
+
+            return obj.user_can_manage(request.user)
 
         else:
             raise ValueError("The object you're trying to access is not an instance of 'AgencyDependentModel'")
