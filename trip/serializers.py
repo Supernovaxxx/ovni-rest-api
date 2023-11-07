@@ -1,7 +1,9 @@
 from compat.django_rest_framework import serializers
 
+from agency.validators import UserCanManage
 from sales.serializers import PassengerSerializer
 from geo.serializers import PlaceSerializer
+
 from .models import Trip, Waypoint
 
 
@@ -13,7 +15,6 @@ class WaypointSerializer(serializers.ModelSerializer):
     class Meta:
         model = Waypoint
         exclude = ['trip', 'id', 'order', 'place']
-
 
     def to_representation(self, instance):
         """Overrides Waypoint representation to include flattened Place attributes."""
@@ -33,3 +34,5 @@ class TripSerializer(serializers.WriteableNestedModelSerializer):
     class Meta:
         model = Trip
         fields = '__all__'
+        extra_kwargs = {'tour': {'validators': [UserCanManage()]}}
+
