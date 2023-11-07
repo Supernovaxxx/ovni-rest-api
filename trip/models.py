@@ -1,13 +1,13 @@
 from django.db import models
 from django.utils.functional import classproperty
 
-from agency.models import Tour, AgencyDependentModel
+from agency.models import Tour, AgencyRelatedModel
 from geo.models import Place
 
 from .managers import TripManager, WaypointManager
 
 
-class Trip(AgencyDependentModel):
+class Trip(AgencyRelatedModel):
     tour = models.ForeignKey(Tour, models.CASCADE, related_name="trips")
     slug = models.SlugField()
     departure = models.DateTimeField()
@@ -31,7 +31,7 @@ class Trip(AgencyDependentModel):
         return 'tour__agency'
 
 
-class Waypoint(AgencyDependentModel):
+class Waypoint(AgencyRelatedModel):
     class Types(models.TextChoices):
         BOARDING = "Boarding"
         STOP = "Stop"

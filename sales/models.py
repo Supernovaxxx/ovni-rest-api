@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.functional import classproperty
 
-from agency.models import Agency, AgencyDependentModel
+from agency.models import Agency, AgencyRelatedModel
 from trip.models import Waypoint
 
 from .managers import TicketManager, OrderManager
@@ -11,7 +11,7 @@ from .managers import TicketManager, OrderManager
 User = get_user_model()
 
 
-class Order(AgencyDependentModel):
+class Order(AgencyRelatedModel):
     class Types(models.TextChoices):
         PENDING = 'Pending'
         PAID = 'Paid'
@@ -26,7 +26,7 @@ class Order(AgencyDependentModel):
     objects = OrderManager()
 
 
-class Ticket(AgencyDependentModel):
+class Ticket(AgencyRelatedModel):
     passenger = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tickets')
     waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, related_name='tickets')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='tickets')
