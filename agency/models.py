@@ -8,7 +8,7 @@ from event.models import Event
 from .managers import TourManager, AgencyDependentManager
 
 
-class AgencyDependentModel(GuardedModel):
+class AgencyRelatedModel(GuardedModel):
     """An abstract base model class that represents a model that is dependent on an agency."""
 
     objects = AgencyDependentManager()
@@ -88,7 +88,7 @@ class Agency(GuardedModel):
         return self.title
 
 
-class Tour(AgencyDependentModel):
+class Tour(AgencyRelatedModel):
     agency = models.ForeignKey(Agency, models.PROTECT)
     event = models.ForeignKey(Event, models.PROTECT)
 
