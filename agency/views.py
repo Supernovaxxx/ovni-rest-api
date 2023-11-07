@@ -1,16 +1,16 @@
 from rest_framework.exceptions import PermissionDenied
 
 from compat.django_rest_framework.views import QueryParamFilterableModelViewSet
+from compat.django_rest_framework.permissions import IsReadOnly
 
 from .models import Agency, Tour
 from .serializers import AgencySerializer, TourSerializer
-from .permissions import CanManageAgency
 from .utils import get_agency_for_user
+from .permissions import CanManageAgency
 
 
 class AgencyRelatedModelViewSet(QueryParamFilterableModelViewSet):
-    permission_classes = [CanManageAgency]
-    get_is_private = False
+    permission_classes = [CanManageAgency | IsReadOnly]
 
     def perform_create(self, serializer):
         if user_agency := get_agency_for_user(self.request.user):
@@ -25,19 +25,10 @@ class AgencyRelatedModelViewSet(QueryParamFilterableModelViewSet):
             raise PermissionDenied("You're not a team member of any Agency.")
 
     def perform_destroy(self, instance):
-        if user_agency := get_agency_for_user(self.request.user):
-
-            if instance.agency == user_agency:
-                instance.delete()
-            else:
-                raise PermissionDenied("The resource you're trying to delete does not belong to your Agency")
-
+        if instance.user_can_manage(self.request.user):
+            instance.delete()
         else:
-            raise PermissionDenied("You're not a team member of any Agency.")
-
-
-class PrivateAgencyRelatedModelViewSet(AgencyRelatedModelViewSet):
-    get_is_private = True
+            raise PermissionDenied("The resource you're trying to delete does not belong to you.")
 
 
 class AgencyViewSet(QueryParamFilterableModelViewSet):

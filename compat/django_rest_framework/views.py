@@ -13,12 +13,12 @@ class QueryParamFilterableModelViewSet(viewsets.ModelViewSet):
         qs = super().get_queryset()
 
         if params := self.request.query_params:
-            qs = filter_by_query_params(qs, params)
+            qs = _filter_by_query_params(qs, params)
 
         return qs
 
 
-def filter_by_query_params(qs, params):
+def _filter_by_query_params(qs, params):
     filters = {}
     for param, value in params.items():
         filters[param] = value
