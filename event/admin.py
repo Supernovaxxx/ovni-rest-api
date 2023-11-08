@@ -2,7 +2,6 @@ from datetime import datetime
 
 
 from django.contrib import admin
-from django.db.models import Q
 from django.utils.html import format_html
 from django.urls import reverse
 
@@ -35,6 +34,7 @@ class IsUpcomingFilter(admin.SimpleListFilter):
         return queryset
 
 
+@admin.register(Event, site=admin.site)
 @admin.register(Event, site=agency_admin_site)
 class EventAdmin(admin.ModelAdmin):
     list_display = ["title", "start_date", "end_date", "create_tour_link"]

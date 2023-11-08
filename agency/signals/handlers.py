@@ -22,13 +22,14 @@ def set_permissions(sender, instance, created, **kwargs):
 
         perms = Permission.objects.filter(
             Q(codename__in=[
-                "view_agency",
-                "change_agency",
-                "add_tour",
-                "view_tour",
-                "change_tour",
-                "delete_tour",
-                "view_event",
+                'view_agency',
+                'change_agency',
+                'manage_agency',
+                'add_tour',
+                'view_tour',
+                'change_tour',
+                'delete_tour',
+                'view_event',
             ])
         )
 
@@ -37,7 +38,7 @@ def set_permissions(sender, instance, created, **kwargs):
             group.permissions.add(perm.id)
 
         # Assign object level permissions
-        for perm in ["view_agency", "change_agency"]:
+        for perm in ['view_agency', 'change_agency', 'manage_agency',]:
             assign_perm(perm, group, instance)
 
 
